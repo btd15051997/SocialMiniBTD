@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="red">#f91509</color>
+    <color name="green">#17d83e</color>
+    <color name="background">#647F8C</color>
+    <color name="main_color">#F1F1F1</color>
+    <color name="circle_color">#FE9700</color>
+    <color name="white">#ffffff</color>
+    <color name="white_trans">#11ffffff</color>
+    <color name="yellow">#f7ec25</color>
+    <color name="color_btn_main">#fc7242</color>
+    <color name="black">#000000</color>
+    <color name="dark_grey">#A9A9A9</color>
+    <color name="color_background_main">#1dccc8</color>
+    <color name="btn_login_signin">#03032B</color>
+
+    <color name="color_main_one">#097F90</color>
+    <color name="color_main_two">#2ED7D1</color>
+</resources>

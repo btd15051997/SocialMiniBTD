@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "647684947149",
+    "firebase_url": "https://socialmini-98a0c.firebaseio.com",
+    "project_id": "socialmini-98a0c",
+    "storage_bucket": "socialmini-98a0c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647684947149:android:7bcb64bea298148610bd84",
+        "android_client_info": {
+          "package_name": "com.example.socialminibtd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647684947149-u5fjf16v56ud2908b1ljjbmn8g27i0fh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.socialminibtd",
+            "certificate_hash": "43d72abe8767b266ebe7d8e7b82f0a53a7bcdd82"
+          }
+        },
+        {
+          "client_id": "647684947149-7ok7vcnlpt9aefuf49d7icpcrmcuqu69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBks8deJs6jg7P9DJocBhrhpantppEZxi0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647684947149-7ok7vcnlpt9aefuf49d7icpcrmcuqu69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

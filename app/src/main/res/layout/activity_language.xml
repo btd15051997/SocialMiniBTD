@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".View.Activity.Language.LanguageActivity">
+
+    <Spinner
+        android:id="@+id/spin_country_reg"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:popupBackground="@color/color_background_main">
+
+    </Spinner>
+
+    <Button
+        android:id="@+id/btn_wellcome_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        style="@style/StyleButtonSignInSignUp"
+        android:layout_margin="@dimen/_5sdp"
+        android:text="Confirm"
+        android:textStyle="bold" />
+
+</RelativeLayout>

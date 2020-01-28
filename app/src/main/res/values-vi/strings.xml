@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SocialMiniBTD</string>
+    <string name="txt_login_email_mobile">Your Email </string>
+    <string name="txt_loading">Đang tải...</string>
+    <string name="txt_pass_error">Xin vui lòng nhập mật khẩu!</string>
+    <string name="txt_email_error">Vui lòng nhập email!</string>
+    <string name="txt_re_pass_error">Xin vui lòng nhập lai mật khẩu!</string>
+    <string name="txt_pass_confirmpass_not_match">Mật khẩu và Mật khẩu được xác nhận không khớp!</string>
+    <string name="txt_pass_six_character">" Mật khẩu phải có ít nhất 6 ký tự"</string>
+</resources>
