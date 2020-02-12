@@ -10,14 +10,13 @@ import android.widget.EditText;
 
 import com.example.socialminibtd.Presenter.Activity.SignUpPresenter.SignUpPresenter;
 import com.example.socialminibtd.R;
-import com.example.socialminibtd.Utils.Controller;
-import com.example.socialminibtd.View.Activity.Profile.ProfileActivity;
+import com.example.socialminibtd.View.Activity.Dashbroad.DashboardActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity implements IRegisterActivityView, View.OnClickListener {
 
 
-    private EditText edt_login_email, edt_signup_pass, edt_signup_re_pass;
+    private EditText edt_login_email, edt_signup_pass, edt_signup_re_pass, edt_signup_name, edt_signup_phone;
     private Button btn_signup_confirm;
     private SignUpPresenter mSignUpPresenter;
     private FirebaseAuth mAuth;
@@ -41,7 +40,11 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         edt_login_email = findViewById(R.id.edt_signup_email);
         edt_signup_pass = findViewById(R.id.edt_signup_pass);
         edt_signup_re_pass = findViewById(R.id.edt_signup_re_pass);
+        edt_signup_name = findViewById(R.id.edt_signup_name);
+        edt_signup_phone = findViewById(R.id.edt_signup_phone);
         btn_signup_confirm = findViewById(R.id.btn_signup_confirm);
+
+
         mSignUpPresenter = new SignUpPresenter(RegisterActivity.this, this);
 
         btn_signup_confirm.setOnClickListener(this);
@@ -52,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     @Override
     public void onIntentProfile() {
 
-        startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
+        startActivity(new Intent(RegisterActivity.this, DashboardActivity.class));
         finish();
     }
 
@@ -63,9 +66,10 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
 
             case R.id.btn_signup_confirm:
 
-
                 mSignUpPresenter.onHandleSignNormal(edt_login_email.getText().toString().trim()
                         , edt_signup_pass.getText().toString().trim()
+                        , edt_signup_name.getText().toString().trim()
+                        , edt_signup_phone.getText().toString().trim()
                         , edt_signup_re_pass.getText().toString().trim()
                         , mAuth);
 

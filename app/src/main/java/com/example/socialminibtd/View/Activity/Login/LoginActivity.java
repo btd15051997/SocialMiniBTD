@@ -13,20 +13,32 @@ import android.widget.TextView;
 
 import com.example.socialminibtd.Presenter.Activity.LoginPresenter.LoginPresenter;
 import com.example.socialminibtd.R;
-import com.example.socialminibtd.View.Activity.Home.HomeActivity;
-import com.example.socialminibtd.View.Activity.Profile.ProfileActivity;
+import com.example.socialminibtd.Utils.Const;
+import com.example.socialminibtd.Utils.Controller;
+import com.example.socialminibtd.View.Activity.Dashbroad.DashboardActivity;
 import com.example.socialminibtd.View.Activity.Register.RegisterActivity;
 import com.example.socialminibtd.View.Dialog.ForgotPassword.DialogForgotPassword;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements ILoginActivityView, View.OnClickListener {
 
 
+    private static final int RC_SIGN_IN = 100;
     private EditText edt_login_email, edt_login_pass;
     private TextView txt_register, txt_forgot_pass;
     private Button btn_login_confirm;
     private LoginPresenter mLoginPresenter;
     private FirebaseAuth mAuth;
+    private SignInButton btn_google_login;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
 
         mAuth = FirebaseAuth.getInstance();
         onMappingView();
+        onConfigSignGoogle();
 
     }
 
@@ -46,12 +59,29 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         edt_login_pass = findViewById(R.id.edt_login_pass);
         txt_register = findViewById(R.id.txt_register);
         txt_forgot_pass = findViewById(R.id.txt_forgot_pass);
+        btn_google_login = findViewById(R.id.btn_google_login);
 
+
+        btn_google_login.setOnClickListener(this);
         txt_register.setOnClickListener(this);
         btn_login_confirm.setOnClickListener(this);
         txt_forgot_pass.setOnClickListener(this);
 
         mLoginPresenter = new LoginPresenter(LoginActivity.this, this);
+
+    }
+
+    @Override
+    public void onConfigSignGoogle() {
+
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
 
     }
 
@@ -71,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
     @Override
     public void onLoginIntentHome() {
 
-        startActivity(new Intent(LoginActivity.this, ProfileActivity.class));
+        startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
         finish();
     }
 
@@ -118,10 +148,54 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
             case R.id.txt_forgot_pass:
 
                 DialogForgotPassword dialogOTPFragment = new DialogForgotPassword();
-                dialogOTPFragment.setCancelable(false);
+                dialogOTPFragment.setCancelable(true);
                 dialogOTPFragment.show(getSupportFragmentManager(), "DialogForgotPassword");
 
                 break;
+
+            case R.id.btn_google_login:
+
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+
+                break;
+
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+
+                mLoginPresenter.onfirebaseAuthWithGoogle(account, mAuth);
+
+            } catch (ApiException e) {
+
+                // Google Sign In failed, update UI appropriately
+                Controller.appLogDebug(Const.LOG_DAT + " Google Sign In failed :", e.toString());
+
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user != null) {
+
+            onLoginIntentHome();
 
         }
 

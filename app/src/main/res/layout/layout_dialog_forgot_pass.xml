@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_trans"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     android:scrollbars="none">
 
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/layout_rela_login"
         android:layout_width="match_parent"
+        android:background="@color/white_trans"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
         tools:context=".View.Activity.Login.LoginActivity">
 
         <androidx.appcompat.widget.Toolbar
@@ -44,7 +44,7 @@
         <ImageView
             android:id="@+id/img_login_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_200sdp"
             android:layout_below="@+id/toolbar_forgotpassword"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_10sdp"
@@ -55,6 +55,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/img_login_header"
             android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:orientation="vertical">
 
             <TextView
@@ -79,6 +80,7 @@
                     style="@style/StyleEditTextSignInSignUP"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
                     android:layout_gravity="center_vertical"
                     android:hint="Email" />
             </com.google.android.material.textfield.TextInputLayout>

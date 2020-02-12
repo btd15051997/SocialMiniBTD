@@ -15,6 +15,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
 
 public class SignUpPresenter implements ISignUpPresenter {
 
@@ -27,11 +31,20 @@ public class SignUpPresenter implements ISignUpPresenter {
     }
 
     @Override
-    public void onHandleSignNormal(String email, String pass, String re_pass, FirebaseAuth auth) {
+    public void onHandleSignNormal(String email, String pass, String name, String phone, String re_pass, FirebaseAuth auth) {
 
         if (email.isEmpty()) {
 
             Controller.showLongToast(registerActivity.getResources().getString(R.string.txt_email_error), registerActivity);
+
+        } else if (name.isEmpty()) {
+
+            Controller.showLongToast(registerActivity.getResources().getString(R.string.txt_name_error), registerActivity);
+
+
+        } else if (phone.isEmpty()) {
+
+            Controller.showLongToast(registerActivity.getResources().getString(R.string.txt_phone_error), registerActivity);
 
         } else if (pass.isEmpty()) {
 
@@ -56,7 +69,7 @@ public class SignUpPresenter implements ISignUpPresenter {
                 Controller.showSimpleProgressDialog(registerActivity
                         , registerActivity.getResources().getString(R.string.txt_loading), false);
 
-                SignUpWithEmailPass(email, pass, auth);
+                SignUpWithEmailPass(email,name,phone, pass, auth);
 
             } else {
 
@@ -68,7 +81,35 @@ public class SignUpPresenter implements ISignUpPresenter {
 
     }
 
-    private void SignUpWithEmailPass(String email, String password, final FirebaseAuth mAuth) {
+    @Override
+    public void onPutAuthToRealTimeDatabase(FirebaseUser user,String name,String phone) {
+
+        String user_email = user.getEmail();
+        String user_uid = user.getUid();
+
+
+        HashMap<Object, String> hashMap = new HashMap<>();
+        hashMap.put("email", user_email);
+        hashMap.put("uid", user_uid);
+        hashMap.put("name", name);
+        hashMap.put("phone", phone);
+        hashMap.put("image", "");
+        hashMap.put("image_cover", "");
+
+        // firebase database instance
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        //path to store user named "User"
+        DatabaseReference reference = database.getReference("User");
+
+        //put data within database
+        reference.child(user_uid).setValue(hashMap);
+
+        Controller.appLogDebug(Const.LOG_DAT, "PutAuthToRealTimeDatabase  " + hashMap.toString());
+
+    }
+
+    private void SignUpWithEmailPass(String email, final String name, final String phone, String password, final FirebaseAuth mAuth) {
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(registerActivity, new OnCompleteListener<AuthResult>() {
@@ -85,7 +126,9 @@ public class SignUpPresenter implements ISignUpPresenter {
 
                             Log.d(Const.LOG_DAT, "createUserWithEmail:success  " + user.getEmail());
 
-                            Controller.showLongToast(user.getEmail().toString(),registerActivity);
+                            Controller.showLongToast(user.getEmail().toString(), registerActivity);
+
+                            onPutAuthToRealTimeDatabase(user,name,phone);
 
                             iRegisterActivityView.onIntentProfile();
 
@@ -106,7 +149,7 @@ public class SignUpPresenter implements ISignUpPresenter {
 
                 Log.d(Const.LOG_DAT, "createUserWithEmail:false  " + e.toString());
 
-                Controller.showLongToast(e.getMessage().toString(),registerActivity);
+                Controller.showLongToast(e.getMessage().toString(), registerActivity);
 
             }
         });

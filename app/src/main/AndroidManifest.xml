@@ -23,19 +23,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".View.Activity.Home.HomeActivity"></activity>
-        <activity android:name=".View.Activity.Profile.ProfileActivity" />
-        <activity android:name=".View.Activity.Register.RegisterActivity" />
-        <activity android:name=".View.Activity.Login.LoginActivity" />
+
         <activity
-            android:name=".View.Activity.Language.LanguageActivity"
+            android:name=".View.Activity.Dashbroad.DashboardActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".View.Activity.WellcomeActivity">
+        <activity
+            android:name=".View.Activity.Register.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.Activity.Login.LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".View.Activity.Language.LanguageActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".View.Activity.WellcomeActivity">
+
         </activity>
     </application>
 
