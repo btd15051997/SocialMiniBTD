@@ -4,12 +4,25 @@
     <string name="txt_loading">Loading...</string>
     <string name="txt_email_error">Please Enter Email ID!</string>
     <string name="txt_pass_error">Please Enter Password!</string>
+    <string name="txt_title_error">Please Enter Title!</string>
+    <string name="txt_description_error">Please Enter Description!</string>
     <string name="txt_edit_name">Edit Profile Name</string>
     <string name="txt_camera">Camera</string>
     <string name="txt_enter">Enter</string>
     <string name="txt_update">Update</string>
+    <string name="txt_last_seen">Last seen at:</string>
+
     <string name="txt_cancel">Cancel</string>
+    <string name="txt_seen">Seen</string>
+    <string name="txt_delivered">Delivered</string>
+    <string name="txt_typing">Typing...</string>
     <string name="txt_gallery">Gallery</string>
+    <string name="txt_delete">Delete</string>
+    <string name="txt_text_delete">Are you sure to detele this message?</string>
+    <string name="txt_was_delete">This message was deleted...</string>
+    <string name="txt_what_thingking">what are you thinking?</string>
+
+
     <string name="txt_edit_email">Edit Profile Email</string>
     <string name="txt_edit_phone">Edit Profile Phone</string>
     <string name="txt_name_error">Please Enter Full Name!</string>
@@ -23,6 +36,12 @@
     <string name="txt_bottom_home">Home</string>
     <string name="txt_bottom_user">User</string>
     <string name="txt_bottom_profile">Profile</string>
+    <string name="txt_edit">Edit</string>
+    <string name="txt_logout">LogOut</string>
+    <string name="txt_ggmap">GoogleMap</string>
+    <string name="txt_new">News</string>
+    <string name="txt_view_detail">View Detail</string>
+    <string name="txt_send_message">Send Message</string>
 
     <string-array name="language">
         <item>Select Language</item>

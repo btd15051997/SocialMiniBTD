@@ -76,11 +76,9 @@ public class LoginPresenter implements ILoginPresenter {
 
                             iLoginActivityView.onLoginIntentHome();
 
-
                             Controller.showLongToast(user.getEmail().toString(), mLoginActivity);
 
                             Controller.removeProgressDialog();
-
 
                         } else {
 
@@ -164,6 +162,8 @@ public class LoginPresenter implements ILoginPresenter {
         hashMap.put("email", user_email);
         hashMap.put("uid", user_uid);
         hashMap.put("name", user_name);
+        hashMap.put(Const.Params.ONLINE_STATUS, Const.Params.ONLINE);
+        hashMap.put(Const.Params.TYPING_TO, "onOne");
         hashMap.put("phone", user_phone);
         hashMap.put("image", user_picture);
         hashMap.put("image_cover", "");

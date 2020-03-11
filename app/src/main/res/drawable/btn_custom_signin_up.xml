@@ -5,7 +5,7 @@
         <shape>
 
             <solid android:color="#E9E9E9" />
-            <corners android:radius="@dimen/_30sdp" />
+            <corners android:radius="@dimen/_10sdp" />
 
         </shape>
 
@@ -14,7 +14,7 @@
         >
         <shape>
             <solid android:color="#D5D5D5" />
-            <corners android:radius="@dimen/_30sdp" />
+            <corners android:radius="@dimen/_10sdp" />
         </shape>
     </item>
     <item
@@ -25,7 +25,7 @@
             <gradient
                 android:endColor="#097F90"
                 android:startColor="#2ED7D1" />
-            <corners android:radius="@dimen/_30sdp" />
+            <corners android:radius="@dimen/_10sdp" />
         </shape>
     </item>
 </layer-list>

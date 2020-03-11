@@ -9,48 +9,12 @@
     android:fitsSystemWindows="true"
     android:scrollbars="none">
 
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/layout_rela_login"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         tools:context=".View.Activity.Login.LoginActivity">
-
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--            android:id="@+id/toolbar_dashboard"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:visibility="gone"-->
-<!--            android:layout_height="?android:attr/actionBarSize"-->
-<!--            android:background="@drawable/layout_toolbar">-->
-
-<!--            <RelativeLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_centerInParent="true"-->
-<!--                    android:layout_centerVertical="true"-->
-<!--                    android:gravity="end"-->
-<!--                    android:paddingRight="@dimen/_10sdp"-->
-<!--                    android:text="HOME"-->
-<!--                    android:textColor="@color/white"-->
-<!--                    android:textSize="@dimen/_18ssp"-->
-<!--                    android:textStyle="bold" />-->
-
-<!--                <ImageView-->
-<!--                    android:id="@+id/img_profile_logout"-->
-<!--                    android:layout_width="@dimen/_30sdp"-->
-<!--                    android:layout_height="@dimen/_20sdp"-->
-<!--                    android:layout_alignParentRight="true"-->
-<!--                    android:layout_centerVertical="true"-->
-<!--                    android:src="@drawable/ic_logout" />-->
-
-<!--            </RelativeLayout>-->
-<!--        </androidx.appcompat.widget.Toolbar>-->
-
 
         <FrameLayout
             android:id="@+id/content_home"

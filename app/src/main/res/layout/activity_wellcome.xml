@@ -10,7 +10,7 @@
         android:layout_width="@dimen/_150sdp"
         android:layout_height="@dimen/_150sdp"
         android:layout_centerInParent="true"
-        android:src="@drawable/social_icon" />
+        android:src="@mipmap/ic_launcher" />
 
     <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/spin_kitSplash"

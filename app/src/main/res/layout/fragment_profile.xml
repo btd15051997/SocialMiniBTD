@@ -3,29 +3,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_trans"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     tools:context=".View.Fragment.ProfileFragment.ProfileFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_profile"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@drawable/layout_toolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_10sdp">
+
+            <EditText
+                android:id="@+id/edt_search_listpost_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:drawableLeft="@drawable/ic_search"
+                android:gravity="center_horizontal"
+                android:hint="Search post"
+                android:layout_toLeftOf="@+id/img_profile_sortmenu"
+                android:layout_alignParentLeft="true"
+                android:imeOptions="actionSearch"
+                android:padding="@dimen/_5sdp"
+                android:singleLine="true" />
+            <ImageView
+                android:id="@+id/img_profile_sortmenu"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleX="-1"
+                android:src="@drawable/ic_sort_menu" />
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_150sdp"
-        android:layout_alignParentTop="true"
-        android:background="@color/color_main_one">
+        android:layout_below="@+id/toolbar_profile"
+        android:background="@color/white_two">
 
         <ImageView
             android:id="@+id/img_background_profile"
-            android:scaleType="fitXY"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" />
 
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/relative_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_100sdp"
-        android:background="@color/white_trans"
+        android:layout_marginTop="@dimen/_150sdp"
         android:orientation="horizontal">
 
 
@@ -39,25 +77,25 @@
                 android:id="@+id/img_avatar_profile"
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_70sdp"
-                android:background="@drawable/ic_account"
                 android:padding="@dimen/_5sdp"
                 android:scaleType="fitXY" />
 
-            <ImageView
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="end"
-                android:background="@drawable/background_oval_img"
-                android:src="@drawable/ic_edit" />
+            <!--            <ImageView-->
+            <!--                android:layout_width="@dimen/_20sdp"-->
+            <!--                android:layout_height="@dimen/_20sdp"-->
+            <!--                android:layout_alignParentRight="true"-->
+            <!--                android:layout_alignParentBottom="true"-->
+            <!--                android:layout_centerHorizontal="true"-->
+            <!--                android:layout_gravity="end"-->
+            <!--                android:background="@drawable/background_oval_img"-->
+            <!--                android:src="@drawable/ic_edit" />-->
 
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/_5sdp"
             android:layout_toLeftOf="@+id/img_edit_text_profile"
             android:layout_toRightOf="@+id/relative1_img_profile"
@@ -69,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="Name"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_13ssp" />
 
             <TextView
@@ -78,6 +116,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="Email"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_11ssp" />
 
             <TextView
@@ -86,6 +125,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="Phone"
+                android:textColor="@color/black_two"
                 android:textSize="@dimen/_11ssp" />
 
 
@@ -100,5 +140,22 @@
             android:src="@drawable/ic_edit" />
     </RelativeLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyc_listpost_profile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/relative_info" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_add"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        app:rippleColor="@color/color_background_main"
+        android:background="@color/black_two"
+        android:layout_margin="16dp" />
 
 </RelativeLayout>

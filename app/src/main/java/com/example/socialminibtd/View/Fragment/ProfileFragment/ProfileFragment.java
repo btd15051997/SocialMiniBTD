@@ -7,35 +7,51 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.socialminibtd.Adapter.ListPostAdapter;
+import com.example.socialminibtd.Model.ListPost;
 import com.example.socialminibtd.Presenter.Fragment.ProfilePresenter.ProfilePresenter;
 import com.example.socialminibtd.R;
 import com.example.socialminibtd.Utils.Const;
 import com.example.socialminibtd.Utils.Controller;
+import com.example.socialminibtd.View.Activity.AddPost.AddPostActivity;
 import com.example.socialminibtd.View.Activity.Dashbroad.DashboardActivity;
+import com.example.socialminibtd.View.Dialog.ForgotPassword.DialogForgotPassword;
+import com.example.socialminibtd.View.Dialog.SettingsDialog.SettingsDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -49,7 +65,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.security.Key;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
@@ -62,10 +78,12 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
     private View mView;
     private DashboardActivity mDashboardActivity;
-    private ImageView  img_edit_text_profile, img_background_profile;
-    private ImageView img_avatar_profile;
+    private ImageView img_edit_text_profile, img_background_profile;
+    private ImageView img_avatar_profile,img_profile_sortmenu;
     private TextView txt_name_profile, txt_email_profile, txt_phone_profile;
     private RelativeLayout relative1_img_profile;
+    private EditText edt_search_listpost_profile;
+    private FloatingActionButton fab_profile;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -75,20 +93,27 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
     private StorageReference mStorageReference;
 
+    private String uid;
+
     //permissions constants
     private static final int CAMERA_REQUEST_CODE = 101;
     private static final int STORAGE_REQUEST_CODE = 102;
     private static final int IMAGE_PICK_GALLERY_REQUEST_CODE = 103;
     private static final int IMAGE_PICK_CAMERA_REQUEST_CODE = 104;
 
+
     //uri image
-
     private Uri image_uri;
-
     private String cameraPermissions[];
     private String storagePermissions[];
     private String PhotoAvatarOrPhotoCover;
     private String storagePath = "Users_Profile_Cover_Image/";
+
+
+    //adapter
+    private RecyclerView recyc_listpost_profile;
+    private ListPostAdapter postAdapter;
+    private ArrayList<ListPost> postArrayList;
 
 
     public static ProfileFragment newInstance(String param1, String param2) {
@@ -113,6 +138,13 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -122,6 +154,8 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
         onMappingView();
 
         onGetDataShowProfile();
+
+        onShowListPostProfile();
 
         return mView;
     }
@@ -137,17 +171,52 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
         img_edit_text_profile = mView.findViewById(R.id.img_edit_text_profile);
         img_background_profile = mView.findViewById(R.id.img_background_profile);
         relative1_img_profile = mView.findViewById(R.id.relative1_img_profile);
+        recyc_listpost_profile = mView.findViewById(R.id.recyc_listpost_profile);
+        edt_search_listpost_profile = mView.findViewById(R.id.edt_search_listpost_profile);
+        img_profile_sortmenu = mView.findViewById(R.id.img_profile_sortmenu);
+        fab_profile = mView.findViewById(R.id.fab_profile);
 
         mPresenter = new ProfilePresenter(mDashboardActivity, this);
-
 
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
+        onSettingRecyclerView();
+
         img_background_profile.setOnClickListener(this);
         img_edit_text_profile.setOnClickListener(this);
+        img_profile_sortmenu.setOnClickListener(this);
         relative1_img_profile.setOnClickListener(this);
+
+        edt_search_listpost_profile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                onSearchListPost(s.toString());
+
+
+            }
+        });
+
+        fab_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mDashboardActivity.startActivity(new Intent(mDashboardActivity, AddPostActivity.class));
+
+            }
+        });
 
     }
 
@@ -163,6 +232,7 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
         onShowProgressBarLoading();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View v) {
 
@@ -185,6 +255,48 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                 PhotoAvatarOrPhotoCover = "image_cover";
                 onShowImagePickDialog();
+
+                break;
+
+            case R.id.img_profile_sortmenu:
+
+                PopupMenu popupMenu = new PopupMenu(mDashboardActivity, img_profile_sortmenu, Gravity.CENTER_HORIZONTAL);
+
+                popupMenu.getMenu().add(Menu.NONE, 0, 0, mDashboardActivity.getResources().getString(R.string.txt_logout));
+
+                popupMenu.getMenu().add(Menu.NONE, 1, 0,"Settings");
+
+
+                popupMenu.show();
+
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        switch (item.getItemId()) {
+
+                            case 0:
+
+                                mAuth.signOut();
+                                mDashboardActivity.onCheckUserCurrent();
+
+                                break;
+
+                            case 1:
+
+                                SettingsDialog dialogSetting = new SettingsDialog();
+                                dialogSetting.setCancelable(true);
+                                dialogSetting.show(getFragmentManager(), "DialogSettings");
+
+                                break;
+
+                        }
+
+                        return false;
+                    }
+                });
+
 
                 break;
 
@@ -211,6 +323,8 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
                     //get data
 
                     mPresenter.onGetDataShowProfile(ds);
+
+                    uid = "" + ds.child("uid").getValue();
 
                 }
             }
@@ -316,6 +430,111 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
     }
 
     @Override
+    public void onSettingRecyclerView() {
+
+        recyc_listpost_profile.setHasFixedSize(true);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mDashboardActivity, LinearLayoutManager.VERTICAL, true);
+
+        linearLayoutManager.setStackFromEnd(true);
+
+        linearLayoutManager.setReverseLayout(true);
+
+        recyc_listpost_profile.setLayoutManager(linearLayoutManager);
+
+        postArrayList = new ArrayList<>();
+
+    }
+
+    @Override
+    public void onShowListPostProfile() {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (postArrayList != null) {
+
+                    postArrayList.clear();
+
+                }
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    ListPost listPost = ds.getValue(ListPost.class);
+
+                    if (mUser.getUid().equals(listPost.getUid())) {
+
+                        postArrayList.add(listPost);
+
+                    }
+                }
+
+                postAdapter = new ListPostAdapter(postArrayList, mDashboardActivity);
+
+                recyc_listpost_profile.setAdapter(postAdapter);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                Controller.showLongToast(databaseError.toString(), mDashboardActivity);
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onSearchListPost(final String textQuery) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (postArrayList != null) {
+
+                    postArrayList.clear();
+
+                }
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    ListPost listPost = ds.getValue(ListPost.class);
+
+                    if (mUser.getUid().equals(listPost.getUid()) && listPost.getuTitle().toLowerCase().contains(textQuery)
+                            || listPost.getuDescription().toLowerCase().contains(textQuery)) {
+
+                        postArrayList.add(listPost);
+
+                    }
+                }
+
+                postAdapter = new ListPostAdapter(postArrayList, mDashboardActivity);
+
+                recyc_listpost_profile.setAdapter(postAdapter);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                Controller.showLongToast(databaseError.toString(), mDashboardActivity);
+
+            }
+        });
+
+
+    }
+
+    @Override
     public void onShowUIProfile(String name, String email, String phone, String image, String image_cover) {
 
         txt_name_profile.setText(name);
@@ -335,13 +554,10 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
             Picasso.get().load(image).into(img_avatar_profile);
 
-            Log.d("TESST",image);
 
         } catch (Exception e) {
 
             Picasso.get().load(R.drawable.ic_account).into(img_avatar_profile);
-
-            Log.d("TESST",e.toString());
 
         }
 
@@ -350,19 +566,16 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
             Picasso.get().load(image_cover).into(img_background_profile);
 
-            Log.d("TESST",image_cover);
-
         } catch (Exception e) {
 
-            Picasso.get().load(R.drawable.ic_account).into(img_background_profile);
-            Log.d("TESST",e.toString());
+            Picasso.get().load(R.color.color_background_main).into(img_background_profile);
 
         }
 
     }
 
     @Override
-    public void onUploadConverPhotoProfile(Uri image_uri) {
+    public void onUploadConverPhotoProfile(Uri image_uriimage_uri) {
 
         //path and name of image to be stored in firebase storage
 
@@ -381,7 +594,7 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                 while (!uriTask.isSuccessful()) ;
 
-                Uri downLoadUri = uriTask.getResult();
+                final Uri downLoadUri = uriTask.getResult();
 
                 Log.d("TESST", String.valueOf(taskSnapshot.getStorage().getDownloadUrl()));
 
@@ -412,6 +625,83 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                         }
                     });
+
+                    if (PhotoAvatarOrPhotoCover.equals("image")) {
+
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                        Query query = ref.orderByChild("uid").equalTo(uid);
+
+                        query.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                    String child = ds.getKey();
+                                    dataSnapshot.getRef().child(child).child("uDp").setValue(downLoadUri.toString());
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                Controller.appLogDebug(Const.LOG_DAT, databaseError.getMessage());
+
+                            }
+                        });
+                        //  update image in current users comments on posts
+                        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                    String child = ds.getKey();
+
+                                    if (dataSnapshot.child(child).hasChild("Comments")) {
+
+                                        String child1 = "" + dataSnapshot.child(child).getKey();
+
+                                        Query child2 = FirebaseDatabase.getInstance().getReference("Posts")
+                                                .child(child1).child("Comments").orderByChild("uid").equalTo(uid);
+
+                                        child2.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                                    String child = ds.getKey();
+
+                                                    dataSnapshot.getRef().child(child).child("uDp").setValue(downLoadUri.toString());
+
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                Controller.appLogDebug(Const.LOG_DAT, "" + databaseError.getMessage());
+
+                                            }
+                                        });
+
+                                    }
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
 
                 } else {
 
@@ -457,7 +747,7 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        String value = editText.getText().toString().trim();
+                        final String value = editText.getText().toString().trim();
 
                         if (editText.getText().toString().isEmpty()) {
 
@@ -488,6 +778,85 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
                                     Controller.showLongToast(e.toString(), mDashboardActivity);
                                 }
                             });
+
+
+                            if (key.equals("name")) {
+
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                                Query query = ref.orderByChild("uid").equalTo(uid);
+
+                                query.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                            String child = ds.getKey();
+                                            dataSnapshot.getRef().child(child).child("uName").setValue(value);
+
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        Controller.appLogDebug(Const.LOG_DAT, databaseError.getMessage());
+
+                                    }
+                                });
+                                //  update name in current users comments on posts
+                                mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                            String child = ds.getKey();
+
+                                            if (dataSnapshot.child(child).hasChild("Comments")) {
+
+                                                String child1 = "" + dataSnapshot.child(child).getKey();
+
+                                                Query child2 = FirebaseDatabase.getInstance().getReference("Posts")
+                                                        .child(child1).child("Comments").orderByChild("uid").equalTo(uid);
+
+                                                child2.addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                                                            String child = ds.getKey();
+
+                                                            dataSnapshot.getRef().child(child).child("uName").setValue(value);
+
+                                                        }
+
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        Controller.appLogDebug(Const.LOG_DAT, "" + databaseError.getMessage());
+
+                                                    }
+                                                });
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+
+                            }
 
                         }
 
@@ -538,7 +907,7 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
     private void requestStoragePermission() {
 
-        requestPermissions(storagePermissions, STORAGE_REQUEST_CODE);
+        ActivityCompat.requestPermissions(mDashboardActivity, storagePermissions, STORAGE_REQUEST_CODE);
 
     }
 
@@ -557,7 +926,7 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
     private void requestCameraPermission() {
 
-      requestPermissions( cameraPermissions, CAMERA_REQUEST_CODE);
+        ActivityCompat.requestPermissions(mDashboardActivity, cameraPermissions, CAMERA_REQUEST_CODE);
 
     }
 
@@ -616,7 +985,6 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
         }
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void pickImageFromGallery() {
@@ -664,7 +1032,6 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
             }
 
             if (requestCode == IMAGE_PICK_CAMERA_REQUEST_CODE) {
-
 
                 Controller.appLogDebug("PICK_IMAGE", image_uri.toString());
 

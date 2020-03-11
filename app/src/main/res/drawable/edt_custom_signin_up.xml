@@ -4,7 +4,7 @@
     <item>
         <shape>
             <solid android:color="@color/white"/>
-            <corners android:radius="@dimen/_30sdp" />
+            <corners android:radius="@dimen/_5sdp" />
 
         </shape>
 
@@ -15,7 +15,7 @@
         android:left="@dimen/_1sdp"
         android:right="@dimen/_1sdp">
         <shape>
-            <corners android:radius="@dimen/_30sdp" />
+            <corners android:radius="@dimen/_5sdp" />
         </shape>
     </item>
 
@@ -29,7 +29,7 @@
                 android:width="@dimen/_1sdp"
                 android:color="@color/color_main_one" />
 
-            <corners android:radius="@dimen/_30sdp" />
+            <corners android:radius="@dimen/_5sdp" />
         </shape>
     </item>
 </layer-list>

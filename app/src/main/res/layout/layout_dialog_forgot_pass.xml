@@ -48,7 +48,7 @@
             android:layout_below="@+id/toolbar_forgotpassword"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_10sdp"
-            android:src="@drawable/social_icon" />
+            android:src="@mipmap/ic_launcher" />
 
         <LinearLayout
             android:layout_width="match_parent"

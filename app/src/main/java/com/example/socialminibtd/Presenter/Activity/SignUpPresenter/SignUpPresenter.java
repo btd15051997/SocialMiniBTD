@@ -92,6 +92,8 @@ public class SignUpPresenter implements ISignUpPresenter {
         hashMap.put("email", user_email);
         hashMap.put("uid", user_uid);
         hashMap.put("name", name);
+        hashMap.put(Const.Params.ONLINE_STATUS, Const.Params.ONLINE);
+        hashMap.put(Const.Params.TYPING_TO, "onOne");
         hashMap.put("phone", phone);
         hashMap.put("image", "");
         hashMap.put("image_cover", "");

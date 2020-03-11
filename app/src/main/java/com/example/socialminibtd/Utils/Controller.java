@@ -2,6 +2,7 @@ package com.example.socialminibtd.Utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
@@ -9,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +20,25 @@ import java.io.File;
 public class Controller {
 
     public static Dialog mProgressDialog;
+
+    public static ProgressDialog progressDialog;
+
+    public static void showProgressDialog(Context context, String message) {
+
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage(message);
+        progressDialog.show();
+
+    }
+
+    public static void dimissProgressDialog() {
+
+        if (progressDialog != null) {
+
+            progressDialog.dismiss();
+        }
+
+    }
 
     public static void showSimpleProgressDialog(Context context, String msg, boolean isCancelable) {
 
@@ -40,6 +59,7 @@ public class Controller {
         if (null != mProgressDialog)
             mProgressDialog.dismiss();
     }
+
     public static void appLogDebug(String key, String value) {
         Log.d(key, value);
     }

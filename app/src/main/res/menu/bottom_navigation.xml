@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_account"
         android:title="PROFILE"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/navigation_listchat"
+        android:icon="@drawable/ic_history"
+        android:title="LIST CHAT"
+        app:showAsAction="always" />
 </menu>

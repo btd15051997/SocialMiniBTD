@@ -25,14 +25,13 @@ public class ProfilePresenter implements IProfilePresenter {
     @Override
     public void onGetDataShowProfile(DataSnapshot dataSnapshot) {
 
-
         Controller.removeProgressDialog();
 
         String email = String.valueOf(dataSnapshot.child("email").getValue());
         String name = String.valueOf(dataSnapshot.child("name").getValue());
         String phone = String.valueOf(dataSnapshot.child("phone").getValue());
-        String image = String.valueOf(dataSnapshot.child("photoavatar").getValue());
-        String image_cover = String.valueOf(dataSnapshot.child("photocover").getValue());
+        String image = String.valueOf(dataSnapshot.child("image").getValue());
+        String image_cover = String.valueOf(dataSnapshot.child("image_cover").getValue());
 
         iProfileFragmentView.onShowUIProfile(name, email, phone, image, image_cover);
 
