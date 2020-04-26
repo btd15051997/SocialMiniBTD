@@ -16,12 +16,12 @@
         android:src="@drawable/ic_account"
         android:visibility="gone" />
 
-    <RelativeLayout
+    <LinearLayout
+        android:layout_marginTop="@dimen/_5sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:orientation="horizontal">
-
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/linear_chat_left"
@@ -37,16 +37,17 @@
                 android:layout_height="wrap_content"
                 android:text="12/01/2020"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_10ssp" />
+                android:textSize="@dimen/_9ssp" />
 
             <TextView
                 android:id="@+id/txt_text_message_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/in_message_bg2"
+                android:background="@drawable/item_bg_chat_right"
                 android:padding="@dimen/_10sdp"
                 android:text="Text Message"
-                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textColor="@color/white"
                 android:textSize="@dimen/_13ssp" />
 
             <ImageView
@@ -54,7 +55,7 @@
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_100sdp"
                 android:adjustViewBounds="true"
-                android:background="@drawable/in_message_bg2"
+                android:background="@drawable/item_bg_chat_right"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_image" />
 
@@ -67,13 +68,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/linear_chat_left"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_3sdp"
             android:layout_marginRight="@dimen/_5sdp"
+            android:layout_gravity="end"
             android:text="No Update"
-            android:textColor="@color/background"
+            android:textColor="@color/black_two"
             android:textSize="@dimen/_11ssp" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </LinearLayout>

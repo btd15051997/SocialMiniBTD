@@ -118,6 +118,8 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_bottom);
         setContentView(R.layout.activity_chat);
 
         onMappingView();
@@ -134,7 +136,6 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
             //create api service
             //  apiService = Client.getRetrofit(Const.URL_FCM).create(APIService.class);
-
 
             onSeenMessagetChat();
 
@@ -264,7 +265,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
                         }
                         if (!onlineStatus.equals(Const.Params.ONLINE)) {
 
-                            txt_status_chatting.setText(onlineStatus);
+                            txt_status_chatting.setText(Controller.convertDateTime(onlineStatus));
 
                         }
                     }
@@ -304,7 +305,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         hashMap.put("sender", myUid);
         hashMap.put("receiver", hisUid);
         hashMap.put("message", message);
-        hashMap.put("timestamp", onGetTimeCurrent());
+        hashMap.put("timestamp", String.valueOf(System.currentTimeMillis()));
         hashMap.put("isseen", false);
         hashMap.put("type", "text");
 
@@ -390,7 +391,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         notify = true;
         Controller.showProgressDialog(ChatActivity.this, "Sending image... ");
 
-        final String timeStamp = onGetTimeCurrent();
+        final String timeStamp = String.valueOf(System.currentTimeMillis());
         String fileNameAndPath = "ChatImage/" + "post_" + timeStamp;
 
 
@@ -409,7 +410,6 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                             //image uploaded
-
 
                             //get url image
                             Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
@@ -857,15 +857,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
     }
 
-    @Override
-    public String onGetTimeCurrent() {
 
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss aaa");
-        String datetime = dateformat.format(c.getTime());
-
-        return datetime;
-    }
 
     @Override
     public void sendNotification(final String hisUid, final String nameSender, final String message) {
@@ -981,7 +973,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
         userRefForSeen.removeEventListener(seenListener);
 
-        onCheckOnlineStatus(onGetTimeCurrent());
+        onCheckOnlineStatus(String.valueOf(System.currentTimeMillis()));
 
         onCheckTypingTo("onOne");
 

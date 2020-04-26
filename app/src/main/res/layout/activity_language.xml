@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,21 +12,61 @@
         android:layout_width="@dimen/_100sdp"
         android:layout_height="@dimen/_40sdp"
         android:layout_alignParentTop="true"
-        android:background="@android:color/transparent"
         android:gravity="center"
-        android:popupBackground="@color/color_background_main">
+        android:popupBackground="@drawable/custom_like_comment">
 
     </Spinner>
 
-    <Button
-        android:id="@+id/btn_wellcome_confirm"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        style="@style/StyleButtonSignInSignUp"
-        android:layout_margin="@dimen/_5sdp"
-        android:text="Confirm"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/spin_country_reg"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/icon_logoapp" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager_getstarted"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_250sdp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp">
+
+        </androidx.viewpager.widget.ViewPager>
+
+        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+            android:id="@+id/dots_indicator_getstarted"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            app:dotsColor="@color/black_two"
+            app:dotsCornerRadius="@dimen/_5sdp"
+            app:dotsSize="@dimen/_10sdp"
+            app:dotsSpacing="@dimen/_3sdp"
+            app:dotsWidthFactor="2.5"
+            app:selectedDotColor="@color/color_background_main" />
+
+        <Button
+            android:id="@+id/btn_wellcome_confirm"
+            style="@style/StyleButtonSignInSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_margin="@dimen/_5sdp"
+            android:text="@string/txt_confirm"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
 
 </RelativeLayout>

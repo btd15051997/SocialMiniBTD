@@ -6,19 +6,19 @@ public class ListPost {
     private String uName, uEmail, uDp, uid;
 
     /*Params Post*/
-    private String uTitle, uTime, uImage, uIDTime, uDescription, uLikes, pComments;
+    private String pTitle, pTime, pImage, pIDTime, pDescription, pLikes, pComments;
 
-    public ListPost(String uName, String uEmail, String uDp, String uid, String uTitle, String uTime, String uImage, String uIDTime, String uDescription, String uLikes, String pComments) {
+    public ListPost(String uName, String uEmail, String uDp, String uid, String pTitle, String pTime, String pImage, String pIDTime, String pDescription, String pLikes, String pComments) {
         this.uName = uName;
         this.uEmail = uEmail;
         this.uDp = uDp;
         this.uid = uid;
-        this.uTitle = uTitle;
-        this.uTime = uTime;
-        this.uImage = uImage;
-        this.uIDTime = uIDTime;
-        this.uDescription = uDescription;
-        this.uLikes = uLikes;
+        this.pTitle = pTitle;
+        this.pTime = pTime;
+        this.pImage = pImage;
+        this.pIDTime = pIDTime;
+        this.pDescription = pDescription;
+        this.pLikes = pLikes;
         this.pComments = pComments;
     }
 
@@ -57,52 +57,52 @@ public class ListPost {
         this.uid = uid;
     }
 
-    public String getuTitle() {
-        return uTitle;
+    public String getpTitle() {
+        return pTitle;
     }
 
-    public void setuTitle(String uTitle) {
-        this.uTitle = uTitle;
+    public void setpTitle(String pTitle) {
+        this.pTitle = pTitle;
     }
 
-    public String getuTime() {
-        return uTime;
+    public String getpTime() {
+        return pTime;
     }
 
-    public void setuTime(String uTime) {
-        this.uTime = uTime;
+    public void setpTime(String pTime) {
+        this.pTime = pTime;
     }
 
-    public String getuImage() {
-        return uImage;
+    public String getpImage() {
+        return pImage;
     }
 
-    public void setuImage(String uImage) {
-        this.uImage = uImage;
+    public void setpImage(String pImage) {
+        this.pImage = pImage;
     }
 
-    public String getuIDTime() {
-        return uIDTime;
+    public String getpIDTime() {
+        return pIDTime;
     }
 
-    public void setuIDTime(String uIDTime) {
-        this.uIDTime = uIDTime;
+    public void setpIDTime(String pIDTime) {
+        this.pIDTime = pIDTime;
     }
 
-    public String getuDescription() {
-        return uDescription;
+    public String getpDescription() {
+        return pDescription;
     }
 
-    public void setuDescription(String uDescription) {
-        this.uDescription = uDescription;
+    public void setpDescription(String pDescription) {
+        this.pDescription = pDescription;
     }
 
-    public String getuLikes() {
-        return uLikes;
+    public String getpLikes() {
+        return pLikes;
     }
 
-    public void setuLikes(String uLikes) {
-        this.uLikes = uLikes;
+    public void setpLikes(String pLikes) {
+        this.pLikes = pLikes;
     }
 
     public String getpComments() {

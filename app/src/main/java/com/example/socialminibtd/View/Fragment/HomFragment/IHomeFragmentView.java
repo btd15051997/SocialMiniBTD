@@ -6,5 +6,8 @@ public interface IHomeFragmentView {
     void onCustomRecyclerView();
     void onGetDataListPost();
     void onShowPopupMenu();
+    void onShowDialogNotification();
+    void onGetCountNotification();
+    void onGetImageAvatarUser();
     void onSearchListPost(String searchQuery);
 }

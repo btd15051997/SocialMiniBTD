@@ -31,7 +31,7 @@ public class SignUpPresenter implements ISignUpPresenter {
     }
 
     @Override
-    public void onHandleSignNormal(String email, String pass, String name, String phone, String re_pass, FirebaseAuth auth) {
+    public void onHandleSignNormal(String email, String pass, String name, String phone, String re_pass,String sex, FirebaseAuth auth) {
 
         if (email.isEmpty()) {
 
@@ -62,6 +62,10 @@ public class SignUpPresenter implements ISignUpPresenter {
 
             Controller.showLongToast(registerActivity.getResources().getString(R.string.txt_pass_six_character), registerActivity);
 
+        }else if(sex.isEmpty()){
+
+            Controller.showLongToast(registerActivity.getResources().getString(R.string.txt_check_gender), registerActivity);
+
         } else {
 
             if (pass.equals(re_pass)) {
@@ -69,7 +73,7 @@ public class SignUpPresenter implements ISignUpPresenter {
                 Controller.showSimpleProgressDialog(registerActivity
                         , registerActivity.getResources().getString(R.string.txt_loading), false);
 
-                SignUpWithEmailPass(email,name,phone, pass, auth);
+                SignUpWithEmailPass(email,name,phone, pass,sex, auth);
 
             } else {
 
@@ -82,7 +86,7 @@ public class SignUpPresenter implements ISignUpPresenter {
     }
 
     @Override
-    public void onPutAuthToRealTimeDatabase(FirebaseUser user,String name,String phone) {
+    public void onPutAuthToRealTimeDatabase(FirebaseUser user,String name,String phone,String gender) {
 
         String user_email = user.getEmail();
         String user_uid = user.getUid();
@@ -95,6 +99,7 @@ public class SignUpPresenter implements ISignUpPresenter {
         hashMap.put(Const.Params.ONLINE_STATUS, Const.Params.ONLINE);
         hashMap.put(Const.Params.TYPING_TO, "onOne");
         hashMap.put("phone", phone);
+        hashMap.put("gender", gender);
         hashMap.put("image", "");
         hashMap.put("image_cover", "");
 
@@ -107,11 +112,13 @@ public class SignUpPresenter implements ISignUpPresenter {
         //put data within database
         reference.child(user_uid).setValue(hashMap);
 
+
+
         Controller.appLogDebug(Const.LOG_DAT, "PutAuthToRealTimeDatabase  " + hashMap.toString());
 
     }
 
-    private void SignUpWithEmailPass(String email, final String name, final String phone, String password, final FirebaseAuth mAuth) {
+    private void SignUpWithEmailPass(String email, final String name, final String phone, String password, final String gender, final FirebaseAuth mAuth) {
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(registerActivity, new OnCompleteListener<AuthResult>() {
@@ -130,7 +137,7 @@ public class SignUpPresenter implements ISignUpPresenter {
 
                             Controller.showLongToast(user.getEmail().toString(), registerActivity);
 
-                            onPutAuthToRealTimeDatabase(user,name,phone);
+                            onPutAuthToRealTimeDatabase(user,name,phone,gender);
 
                             iRegisterActivityView.onIntentProfile();
 

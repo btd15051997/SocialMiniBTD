@@ -3,34 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/_2sdp"
+    android:layout_margin="@dimen/_3sdp"
     android:elevation="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_5sdp"
     app:contentPadding="@dimen/_3sdp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/img_onlinestatus_listchat"
-            android:layout_width="@dimen/_10sdp"
-            android:layout_height="@dimen/_10sdp"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="@dimen/_1sdp" />
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_3sdp"
+        android:padding="@dimen/_3sdp">
 
         <com.blogspot.atifsoftwares.circularimageview.CircularImageView
             android:id="@+id/img_account_listchat"
-            android:layout_width="@dimen/_30sdp"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="@dimen/_45sdp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:background="@drawable/ic_account" />
 
+
         <LinearLayout
-            android:layout_marginLeft="@dimen/_5sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/_5sdp"
             android:layout_toRightOf="@+id/img_account_listchat"
             android:orientation="vertical">
 
@@ -38,23 +36,35 @@
                 android:id="@+id/txt_hisname_listchat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Name"
+                android:drawableLeft="@drawable/ic_account_circle"
+                android:drawablePadding="@dimen/_3sdp"
                 android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_13ssp" />
+                android:text="Name"
+                android:textColor="@color/color_main_two"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt_lastmessage_listchat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chat text"
                 android:layout_marginTop="@dimen/_3sdp"
+                android:drawableLeft="@drawable/ic_message"
+                android:drawablePadding="@dimen/_3sdp"
                 android:maxLines="2"
+                android:text="Chat text"
                 android:textColor="@color/black_two"
-                android:textSize="@dimen/_12ssp" />
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="" />
 
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/img_onlinestatus_listchat"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/_1sdp" />
 
     </RelativeLayout>
 

@@ -80,7 +80,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyHolder> {
 
         Controller.appLogDebug(Const.LOG_DAT, "Send MessageChat Date :" + mArrayList.get(position).getTimestamp());
 
-        holder.txt_chat_date_message_left.setText(timeStamp);
+        holder.txt_chat_date_message_left.setText(Controller.convertDateTime(timeStamp));
 
 
         if (type.equals("text")) {

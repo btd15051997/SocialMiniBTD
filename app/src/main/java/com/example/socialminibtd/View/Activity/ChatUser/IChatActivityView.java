@@ -12,6 +12,5 @@ public interface IChatActivityView {
     void onSendImageMessage(Uri image_uri);
     void onCheckOnlineStatus(String status);
     void onCheckTypingTo(String typingTo);
-    String onGetTimeCurrent();
     void sendNotification(String hisUid,String nameSender,String message);
 }

@@ -96,7 +96,7 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_left);
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_bottom);
         setContentView(R.layout.activity_add_post);
 
         Intent intent = getIntent();
@@ -154,7 +154,6 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
 
     }
 
@@ -346,7 +345,7 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
         DatabaseReference RefUpdate = FirebaseDatabase.getInstance().getReference("Posts");
 
         //get detail post using id of post
-        Query query = RefUpdate.orderByChild("uIDTime").equalTo(editPostId);
+        Query query = RefUpdate.orderByChild("pIDTime").equalTo(editPostId);
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -356,9 +355,9 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    editTitle = String.valueOf(ds.child("uTitle").getValue());
-                    editDescription = String.valueOf(ds.child("uDescription").getValue());
-                    editImage = String.valueOf(ds.child("uImage").getValue());
+                    editTitle = String.valueOf(ds.child("pTitle").getValue());
+                    editDescription = String.valueOf(ds.child("pDescription").getValue());
+                    editImage = String.valueOf(ds.child("pImage").getValue());
 
                     Controller.appLogDebug(Const.LOG_DAT, "onUpdatePost :" + editTitle);
 
@@ -478,7 +477,8 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
             public Map<String, String> getHeaders() throws AuthFailureError {
 
                 HashMap<String, String> header = new HashMap<>();
-                header.put("Authorization", "key=AAAAls0H_M0:APA91bHQOVAR0jvzuQusEg4KV7tm8xc5v45SD_nh50pLqn3LLJMajLa9AUw4vM4MOrn--nF8qO7HEKODbAVMnZbucDVRGi-UlRgRg0DB_Z24yKYGW2q1P72nt_ic2BHswpPn3_lPdmYD");
+                header.put("Authorization"
+                        , "key=AAAAls0H_M0:APA91bHQOVAR0jvzuQusEg4KV7tm8xc5v45SD_nh50pLqn3LLJMajLa9AUw4vM4MOrn--nF8qO7HEKODbAVMnZbucDVRGi-UlRgRg0DB_Z24yKYGW2q1P72nt_ic2BHswpPn3_lPdmYD");
 
                 return header;
             }
@@ -494,7 +494,7 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
         Controller.showProgressDialog(AddPostActivity.this, "Publishing post ...");
 
         // set child on database storage
-        final String timeStamp = onGetTimeCurrent();
+        final String timeStamp = String.valueOf(System.currentTimeMillis());
         String filePathName = "Posts/" + "post_" + timeStamp;
 
 
@@ -524,13 +524,14 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
                         hashMap.put("uName", name);
                         hashMap.put("uEmail", email);
                         hashMap.put("uDp", dp);
-                        hashMap.put("uIDTime", timeStamp);
-                        hashMap.put("uTitle", title);
-                        hashMap.put("uLikes", "0");
+
+                        hashMap.put("pIDTime", timeStamp);
+                        hashMap.put("pTitle", title);
+                        hashMap.put("pLikes", "0");
                         hashMap.put("pComments", "0");
-                        hashMap.put("uDescription", description);
-                        hashMap.put("uImage", downloadUri);
-                        hashMap.put("uTime", timeStamp);
+                        hashMap.put("pDescription", description);
+                        hashMap.put("pImage", downloadUri);
+                        hashMap.put("pTime", timeStamp);
 
                         Controller.appLogDebug(Const.LOG_DAT + " Post hashmap", "" + hashMap);
 
@@ -589,13 +590,14 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
             hashMap.put("uName", name);
             hashMap.put("uEmail", email);
             hashMap.put("uDp", dp);
-            hashMap.put("uIDTime", timeStamp);
-            hashMap.put("uTitle", title);
-            hashMap.put("uLikes", "0");
+
+            hashMap.put("pIDTime", timeStamp);
+            hashMap.put("pTitle", title);
+            hashMap.put("pLikes", "0");
             hashMap.put("pComments", "0");
-            hashMap.put("uDescription", description);
-            hashMap.put("uImage", "noImage");
-            hashMap.put("uTime", timeStamp);
+            hashMap.put("pDescription", description);
+            hashMap.put("pImage", "noImage");
+            hashMap.put("pTime", timeStamp);
 
             Controller.appLogDebug(Const.LOG_DAT + " Post hashmap", "" + hashMap);
 
@@ -685,7 +687,7 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
                         Controller.appLogDebug(Const.LOG_DAT, " Deleted Image ");
 
-                        final String timeStamp = String.valueOf(onGetTimeCurrent());
+                        final String timeStamp = String.valueOf(System.currentTimeMillis());
 
                         String filePathandName = "Posts/" + "post_" + timeStamp;
 
@@ -719,9 +721,9 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
                                             hashMap.put("uEmail", email);
                                             hashMap.put("uDp", dp);
 
-                                            hashMap.put("uTitle", title);
-                                            hashMap.put("uDescription", decription);
-                                            hashMap.put("uImage", downLoadUrl);
+                                            hashMap.put("pTitle", title);
+                                            hashMap.put("pDescription", decription);
+                                            hashMap.put("pImage", downLoadUrl);
 
 
                                             Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : " + hashMap.toString());
@@ -780,7 +782,7 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
     @Override
     public void onUpdateWithNowImage(final String title, final String decription, final String editPostId) {
 
-        final String timeStamp = String.valueOf(onGetTimeCurrent());
+        final String timeStamp = String.valueOf(System.currentTimeMillis());
 
         String filePathandName = "Posts/" + "post_" + timeStamp;
 
@@ -814,9 +816,9 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
                             hashMap.put("uEmail", email);
                             hashMap.put("uDp", dp);
 
-                            hashMap.put("uTitle", title);
-                            hashMap.put("uDescription", decription);
-                            hashMap.put("uImage", downLoadUrl);
+                            hashMap.put("pTitle", title);
+                            hashMap.put("pDescription", decription);
+                            hashMap.put("pImage", downLoadUrl);
 
 
                             Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : " + hashMap.toString());
@@ -872,9 +874,9 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
         hashMap.put("uEmail", email);
         hashMap.put("uDp", dp);
 
-        hashMap.put("uTitle", title);
-        hashMap.put("uDescription", description);
-        hashMap.put("uImage", "noImage");
+        hashMap.put("pTitle", title);
+        hashMap.put("pDescription", description);
+        hashMap.put("pImage", "noImage");
 
 
         Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : " + hashMap.toString());

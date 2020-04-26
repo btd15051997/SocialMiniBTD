@@ -1,161 +1,268 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     tools:context=".View.Fragment.ProfileFragment.ProfileFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_profile"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:background="@drawable/layout_toolbar">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_profile"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_10sdp">
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@drawable/layout_toolbar">
 
-            <EditText
-                android:id="@+id/edt_search_listpost_profile"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_5sdp"
-                android:drawableLeft="@drawable/ic_search"
-                android:gravity="center_horizontal"
-                android:hint="Search post"
-                android:layout_toLeftOf="@+id/img_profile_sortmenu"
-                android:layout_alignParentLeft="true"
-                android:imeOptions="actionSearch"
-                android:padding="@dimen/_5sdp"
-                android:singleLine="true" />
-            <ImageView
-                android:id="@+id/img_profile_sortmenu"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_25sdp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:scaleX="-1"
-                android:src="@drawable/ic_sort_menu" />
+                android:layout_marginRight="@dimen/_10sdp">
 
-        </RelativeLayout>
-    </androidx.appcompat.widget.Toolbar>
+                <EditText
+                    android:id="@+id/edt_search_listpost_profile"
+                    style="@style/StyleEditTextSignInSignUP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:layout_toLeftOf="@+id/img_profile_sortmenu"
+                    android:background="@drawable/edt_custom_signin_up"
+                    android:drawableLeft="@drawable/ic_search"
+                    android:gravity="center"
+                    android:hint="Search Posts"
+                    android:imeOptions="actionSearch"
+                    android:padding="@dimen/_5sdp"
+                    android:singleLine="true"
+                    android:textColor="@color/black_two"
+                    android:textColorHint="@color/black_two"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp"
-        android:layout_below="@+id/toolbar_profile"
-        android:background="@color/white_two">
+                <ImageView
+                    android:id="@+id/img_profile_sortmenu"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:scaleX="-1"
+                    android:src="@drawable/ic_sort_menu" />
 
-        <ImageView
-            android:id="@+id/img_background_profile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/relative_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_150sdp"
-        android:orientation="horizontal">
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
 
 
         <RelativeLayout
-            android:id="@+id/relative1_img_profile"
-            android:layout_width="@dimen/_70sdp"
-            android:layout_height="@dimen/_70sdp"
-            android:layout_marginLeft="@dimen/_30sdp">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar_profile">
+
 
             <ImageView
-                android:id="@+id/img_avatar_profile"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="@dimen/_70sdp"
-                android:padding="@dimen/_5sdp"
+                android:id="@+id/img_background_profile"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_150sdp"
+                android:background="@color/black_two"
                 android:scaleType="fitXY" />
 
-            <!--            <ImageView-->
-            <!--                android:layout_width="@dimen/_20sdp"-->
-            <!--                android:layout_height="@dimen/_20sdp"-->
-            <!--                android:layout_alignParentRight="true"-->
-            <!--                android:layout_alignParentBottom="true"-->
-            <!--                android:layout_centerHorizontal="true"-->
-            <!--                android:layout_gravity="end"-->
-            <!--                android:background="@drawable/background_oval_img"-->
-            <!--                android:src="@drawable/ic_edit" />-->
+
+            <RelativeLayout
+                android:id="@+id/relative_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_110sdp"
+                android:orientation="horizontal">
+
+                <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                    android:id="@+id/img_avatar_profile"
+                    android:layout_width="@dimen/_90sdp"
+                    android:layout_height="@dimen/_90sdp"
+                    android:layout_marginLeft="@dimen/_50sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/icon_logoapp" />
+
+                <androidx.cardview.widget.CardView
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_toRightOf="@+id/img_avatar_profile"
+                    android:elevation="@dimen/_5sdp"
+                    android:padding="@dimen/_2sdp"
+                    app:cardCornerRadius="@dimen/_10sdp">
+
+                    <LinearLayout
+                        android:id="@+id/linear_editprofile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:drawingCacheQuality="low"
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_toLeftOf="@+id/img_edit_text_profile"
+                        android:layout_toRightOf="@+id/img_avatar_profile"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:drawableLeft="@drawable/ic_account_circle"
+                            android:id="@+id/txt_name_profile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:text="Name"
+                            android:drawableRight="@drawable/ic_edit"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_14ssp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:drawableLeft="@drawable/ic_email"
+                            android:id="@+id/txt_email_profile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:singleLine="true"
+                            android:text="Email"
+                            android:textColor="@color/black_three"
+                            android:textSize="@dimen/_11ssp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:drawableLeft="@drawable/ic_phone"
+                            android:id="@+id/txt_phone_profile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:text="Phone"
+                            android:textColor="@color/black_three"
+                            android:textSize="@dimen/_11ssp"
+                            android:textStyle="bold" />
+
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardview_addpost_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relative_info"
+                app:cardBackgroundColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:elevation="@dimen/_5sdp"
+                android:padding="@dimen/_2sdp"
+                app:cardCornerRadius="@dimen/_5sdp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:drawableRight="@drawable/ic_edit"
+                            android:drawablePadding="@dimen/_5sdp"
+                            android:gravity="center_horizontal"
+                            android:padding="@dimen/_5sdp"
+                            android:text="@string/txt_what_you_mind"
+                            android:textColor="@color/black_two"
+                            android:textSize="@dimen/_11ssp"
+                            android:textStyle="bold" />
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:drawableLeft="@drawable/ic_image"
+                            android:drawablePadding="@dimen/_5sdp"
+                            android:padding="@dimen/_5sdp"
+                            android:drawingCacheQuality="auto"
+                            android:gravity="center"
+                            android:textSize="@dimen/_10ssp" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_1sdp"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:background="@color/dark_grey_two" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:background="@drawable/custom_like_comment"
+                            android:drawableLeft="@drawable/ic_edit"
+                            android:drawablePadding="@dimen/_5sdp"
+                            android:gravity="center"
+                            android:padding="@dimen/_5sdp"
+                            android:text="Title/Description"
+                            android:textColor="@color/black_two"
+                            android:textSize="@dimen/_10ssp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyc_listpost_profile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/cardview_addpost_profile" />
+
+
+            <ImageView
+                android:id="@+id/img_update_imagecover"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/_5sdp"
+                android:src="@drawable/ic_camera" />
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_toLeftOf="@+id/img_edit_text_profile"
-            android:layout_toRightOf="@+id/relative1_img_profile"
-            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txt_name_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="Name"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_13ssp" />
-
-            <TextView
-                android:id="@+id/txt_email_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="Email"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_11ssp" />
-
-            <TextView
-                android:id="@+id/txt_phone_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="Phone"
-                android:textColor="@color/black_two"
-                android:textSize="@dimen/_11ssp" />
-
-
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/img_edit_text_profile"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_edit" />
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyc_listpost_profile"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/relative_info" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_add"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        app:rippleColor="@color/color_background_main"
-        android:background="@color/black_two"
-        android:layout_margin="16dp" />
-
-</RelativeLayout>
+</androidx.core.widget.NestedScrollView>

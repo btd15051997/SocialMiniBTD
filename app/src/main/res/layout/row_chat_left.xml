@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_list_chat"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:id="@+id/linear_list_chat"
     android:orientation="horizontal">
 
     <com.blogspot.atifsoftwares.circularimageview.CircularImageView
@@ -29,26 +29,29 @@
                 android:id="@+id/txt_text_message_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/out_message_bg"
+                android:background="@drawable/item_bg_chat_left"
                 android:padding="@dimen/_10sdp"
                 android:text="Text Message "
-                android:visibility="gone"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_13ssp" />
+                android:textColor="@color/black_two"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
             <ImageView
                 android:id="@+id/img_message_chat"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_image"
-                android:background="@drawable/out_message_bg"
                 android:layout_width="@dimen/_100sdp"
-                android:layout_height="@dimen/_100sdp"/>
+                android:layout_height="@dimen/_100sdp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/item_bg_chat_left"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_image" />
 
             <TextView
                 android:id="@+id/txt_chat_date_message_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="12/01/2020"
+                android:layout_marginLeft="@dimen/_3sdp"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_10ssp" />
         </LinearLayout>
@@ -58,8 +61,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/linear_chat_left"
+            android:layout_marginTop="@dimen/_3sdp"
             android:text="Dilevered"
-            android:textColor="@color/background"
+            android:textColor="@color/black_two"
             android:textSize="@dimen/_11ssp" />
     </RelativeLayout>
 

@@ -6,6 +6,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ public class DialogForgotPassword extends DialogFragment implements View.OnClick
     private EditText edt_forgot_email;
     private FirebaseAuth mFirebaseAuth;
     private Button btn_forgot_password;
+    private ImageView img_forgotpass_header;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +50,10 @@ public class DialogForgotPassword extends DialogFragment implements View.OnClick
         edt_forgot_email = dialog_forgot.findViewById(R.id.edt_forgot_email);
 
         btn_forgot_password = dialog_forgot.findViewById(R.id.btn_forgot_password);
+
+        img_forgotpass_header = dialog_forgot.findViewById(R.id.img_forgotpass_header);
+
+        img_forgotpass_header.setAnimation(Controller.onShowAnimationBounce(getContext()));
 
         btn_forgot_password.setOnClickListener(this);
 

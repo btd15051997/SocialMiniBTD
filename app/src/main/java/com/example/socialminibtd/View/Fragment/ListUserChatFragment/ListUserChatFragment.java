@@ -1,10 +1,11 @@
-package com.example.socialminibtd.View.Fragment.ChatListFragment;
+package com.example.socialminibtd.View.Fragment.ListUserChatFragment;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,13 +29,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.ArrayList;
 
 
-public class ChatListFragment extends Fragment implements IChatListFragmentView {
+public class ListUserChatFragment extends Fragment implements IListUserChatView {
 
-    //firebase auth
 
     private FirebaseAuth mAuth;
     private RecyclerView recyc_listuser_chat;
@@ -50,9 +49,8 @@ public class ChatListFragment extends Fragment implements IChatListFragmentView 
     private DashboardActivity dashboardActivity;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         dashboardActivity = (DashboardActivity) getActivity();
 
         if (getArguments() != null) {
@@ -64,19 +62,16 @@ public class ChatListFragment extends Fragment implements IChatListFragmentView 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_chat_list, container, false);
+        view = inflater.inflate(R.layout.fragment_list_user_chat, container, false);
 
         onMappingView();
 
         return view;
     }
 
-
     @Override
     public void onMappingView() {
-
         recyc_listuser_chat = view.findViewById(R.id.recyc_listuser_chat);
-
         mAuth = FirebaseAuth.getInstance();
 
         mCurrentUser = mAuth.getCurrentUser();
@@ -169,8 +164,8 @@ public class ChatListFragment extends Fragment implements IChatListFragmentView 
 
     }
 
-    private void onLastMessage(final String userId) {
-
+    @Override
+    public void onLastMessage(final String uid) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Chats");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -196,15 +191,15 @@ public class ChatListFragment extends Fragment implements IChatListFragmentView 
                         continue;
                     }
 
-                    if (chat.getReceiver().equals(mCurrentUser.getUid()) && chat.getSender().equals(userId)
+                    if (chat.getReceiver().equals(mCurrentUser.getUid()) && chat.getSender().equals(uid)
 
-                            || chat.getReceiver().equals(userId) && chat.getSender().equals(mCurrentUser.getUid())) {
+                            || chat.getReceiver().equals(uid) && chat.getSender().equals(mCurrentUser.getUid())) {
 
-                        if (chat.getType().equals("image")){
+                        if (chat.getType().equals("image")) {
 
                             theLastMessage = "Sent a photo";
 
-                        }else {
+                        } else {
 
                             theLastMessage = chat.getMessage();
 
@@ -213,7 +208,7 @@ public class ChatListFragment extends Fragment implements IChatListFragmentView 
                     }
                 }
 
-                adapter.setLastMessageMap(userId, theLastMessage);
+                adapter.setLastMessageMap(uid, theLastMessage);
                 adapter.notifyDataSetChanged();
 
             }
@@ -225,5 +220,8 @@ public class ChatListFragment extends Fragment implements IChatListFragmentView 
             }
         });
 
+
     }
+
+
 }

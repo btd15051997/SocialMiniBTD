@@ -1,6 +1,7 @@
 package com.example.socialminibtd.View.Fragment.ProfileFragment;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -30,6 +32,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,6 +42,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blogspot.atifsoftwares.circularimageview.CircularImageView;
 import com.example.socialminibtd.Adapter.ListPostAdapter;
 import com.example.socialminibtd.Model.ListPost;
 import com.example.socialminibtd.Presenter.Fragment.ProfilePresenter.ProfilePresenter;
@@ -78,12 +83,13 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
     private View mView;
     private DashboardActivity mDashboardActivity;
-    private ImageView img_edit_text_profile, img_background_profile;
-    private ImageView img_avatar_profile,img_profile_sortmenu;
+    private ImageView img_background_profile;
+    private ImageView img_profile_sortmenu;
+    private LinearLayout linear_editprofile;
+    private CircularImageView img_avatar_profile;
     private TextView txt_name_profile, txt_email_profile, txt_phone_profile;
-    private RelativeLayout relative1_img_profile;
     private EditText edt_search_listpost_profile;
-    private FloatingActionButton fab_profile;
+    private CardView cardview_addpost_profile;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -168,13 +174,12 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
         txt_name_profile = mView.findViewById(R.id.txt_name_profile);
         txt_email_profile = mView.findViewById(R.id.txt_email_profile);
         txt_phone_profile = mView.findViewById(R.id.txt_phone_profile);
-        img_edit_text_profile = mView.findViewById(R.id.img_edit_text_profile);
         img_background_profile = mView.findViewById(R.id.img_background_profile);
-        relative1_img_profile = mView.findViewById(R.id.relative1_img_profile);
         recyc_listpost_profile = mView.findViewById(R.id.recyc_listpost_profile);
         edt_search_listpost_profile = mView.findViewById(R.id.edt_search_listpost_profile);
         img_profile_sortmenu = mView.findViewById(R.id.img_profile_sortmenu);
-        fab_profile = mView.findViewById(R.id.fab_profile);
+        linear_editprofile = mView.findViewById(R.id.linear_editprofile);
+        cardview_addpost_profile = mView.findViewById(R.id.cardview_addpost_profile);
 
         mPresenter = new ProfilePresenter(mDashboardActivity, this);
 
@@ -185,9 +190,17 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
         onSettingRecyclerView();
 
         img_background_profile.setOnClickListener(this);
-        img_edit_text_profile.setOnClickListener(this);
+        linear_editprofile.setOnClickListener(this);
         img_profile_sortmenu.setOnClickListener(this);
-        relative1_img_profile.setOnClickListener(this);
+        img_avatar_profile.setOnClickListener(this);
+        cardview_addpost_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mDashboardActivity.startActivity(new Intent(mDashboardActivity, AddPostActivity.class));
+
+            }
+        });
 
         edt_search_listpost_profile.addTextChangedListener(new TextWatcher() {
             @Override
@@ -209,15 +222,6 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
             }
         });
 
-        fab_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mDashboardActivity.startActivity(new Intent(mDashboardActivity, AddPostActivity.class));
-
-            }
-        });
-
     }
 
 
@@ -226,8 +230,10 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mReference = mFirebaseDatabase.getReference("User");
+
         mStorageReference = FirebaseStorage.getInstance().getReference(); // firebase instance
         onShowProgressBarLoading();
     }
@@ -238,13 +244,13 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
         switch (v.getId()) {
 
-            case R.id.img_edit_text_profile:
+            case R.id.linear_editprofile:
 
                 onShowEditTextProfile();
 
                 break;
 
-            case R.id.relative1_img_profile:
+            case R.id.img_avatar_profile:
 
                 PhotoAvatarOrPhotoCover = "image";
                 onShowImagePickDialog();
@@ -264,7 +270,7 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                 popupMenu.getMenu().add(Menu.NONE, 0, 0, mDashboardActivity.getResources().getString(R.string.txt_logout));
 
-                popupMenu.getMenu().add(Menu.NONE, 1, 0,"Settings");
+                popupMenu.getMenu().add(Menu.NONE, 1, 0, "Settings");
 
 
                 popupMenu.show();
@@ -278,8 +284,7 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                             case 0:
 
-                                mAuth.signOut();
-                                mDashboardActivity.onCheckUserCurrent();
+                                onShowDialogLogOutAccount();
 
                                 break;
 
@@ -304,6 +309,46 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
     }
 
+    private void onShowDialogLogOutAccount() {
+
+        final Dialog dialog = new Dialog(mDashboardActivity, R.style.Custom_Dialog);
+
+        dialog.setCancelable(true);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); // This flag is required to set otherwise the setDimAmount method will not show any effect
+            window.setDimAmount(0.5f); //0 for no dim to 1 for full dim
+        }
+
+        dialog.setContentView(R.layout.dialog_logout);
+
+        TextView btn_logout_yes = (TextView) dialog.findViewById(R.id.btn_logout_yes);
+
+        dialog.show();
+
+        btn_logout_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mAuth.signOut();
+                mDashboardActivity.onCheckUserCurrent();
+
+            }
+        });
+
+        TextView btn_logout_no = (TextView) dialog.findViewById(R.id.btn_logout_no);
+
+        btn_logout_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+    }
 
     @Override
     public void onGetDataShowProfile() {
@@ -508,8 +553,8 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                     ListPost listPost = ds.getValue(ListPost.class);
 
-                    if (mUser.getUid().equals(listPost.getUid()) && listPost.getuTitle().toLowerCase().contains(textQuery)
-                            || listPost.getuDescription().toLowerCase().contains(textQuery)) {
+                    if (mUser.getUid().equals(listPost.getUid()) && listPost.getpTitle().toLowerCase().contains(textQuery)
+                            || listPost.getpDescription().toLowerCase().contains(textQuery)) {
 
                         postArrayList.add(listPost);
 
@@ -552,12 +597,12 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
         //image account
         try {
 
-            Picasso.get().load(image).into(img_avatar_profile);
+            Picasso.get().load(image).placeholder(R.drawable.ic_account).into(img_avatar_profile);
 
 
         } catch (Exception e) {
 
-            Picasso.get().load(R.drawable.ic_account).into(img_avatar_profile);
+            img_avatar_profile.setImageResource(R.drawable.ic_account);
 
         }
 
@@ -761,7 +806,8 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                             hashMap.put(key, value);
 
-                            mReference.child(mUser.getUid()).updateChildren(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            mReference.child(mUser.getUid())
+                                    .updateChildren(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
 

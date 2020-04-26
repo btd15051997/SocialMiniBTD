@@ -4,5 +4,6 @@ public interface IUserFragmentView {
     void onMappingView();
     void onShowListUser();
     void onSearchListUser();
-    void onClickToChat();
+    void onShowDialogCreateGroup();
+    void onShowDialogChatsGroup();
 }

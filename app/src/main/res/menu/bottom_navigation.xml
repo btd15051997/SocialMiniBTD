@@ -4,21 +4,21 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
-        android:title="HOME"
+        android:title="@string/txt_navi_home"
         app:showAsAction="always" />
     <item
         android:id="@+id/navigation_user"
         android:icon="@drawable/ic_history"
-        android:title="USER"
+        android:title="@string/txt_navi_user"
         app:showAsAction="always" />
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_account"
-        android:title="PROFILE"
+        android:title="@string/txt_navi_profile"
         app:showAsAction="always" />
     <item
         android:id="@+id/navigation_listchat"
         android:icon="@drawable/ic_history"
-        android:title="LIST CHAT"
+        android:title="@string/txt_navi_messager"
         app:showAsAction="always" />
 </menu>

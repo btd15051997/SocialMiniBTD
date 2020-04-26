@@ -6,9 +6,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +19,8 @@ import android.widget.Toast;
 import com.example.socialminibtd.R;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class Controller {
 
@@ -23,11 +28,28 @@ public class Controller {
 
     public static ProgressDialog progressDialog;
 
+    public static Animation anim_blink,anim_bounce;
+
     public static void showProgressDialog(Context context, String message) {
 
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(message);
         progressDialog.show();
+
+    }
+
+    public static  Animation onShowAnimationBlink(Context context){
+
+        anim_blink = AnimationUtils.loadAnimation(context,R.anim.slide_blink);
+
+        return anim_blink;
+
+    } public static  Animation onShowAnimationBounce(Context context){
+
+
+        anim_bounce = AnimationUtils.loadAnimation(context,R.anim.slide_bounce);
+
+        return anim_bounce;
 
     }
 
@@ -39,6 +61,18 @@ public class Controller {
         }
 
     }
+
+    public static String convertDateTime(String time) {
+
+        Calendar cal =Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(Long.parseLong(time));
+        String dateTime = DateFormat.format("dd-MM-yyyy hh:mm aa",cal).toString();
+
+
+        return dateTime;
+    }
+
+
 
     public static void showSimpleProgressDialog(Context context, String msg, boolean isCancelable) {
 

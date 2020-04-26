@@ -10,15 +10,19 @@
     <color name="circle_color">#FE9700</color>
     <color name="white">#ffffff</color>
     <color name="white_two">#D8D8D8</color>
+    <color name="white_three">#DADADA</color>
     <color name="white_trans">#11ffffff</color>
     <color name="yellow">#f7ec25</color>
     <color name="color_btn_main">#fc7242</color>
     <color name="black">#000000</color>
+    <color name="black_three">#979797</color>
     <color name="black_two">#313131</color>
     <color name="dark_grey">#A9A9A9</color>
+    <color name="dark_grey_two">#D6D6D6</color>
     <color name="color_background_main">#1dccc8</color>
+    <color name="color_new">#0DADC6</color>
     <color name="btn_login_signin">#03032B</color>
 
-    <color name="color_main_one">#097F90</color>
-    <color name="color_main_two">#2ED7D1</color>
+    <color name="color_main_one">#35BAD1</color>
+    <color name="color_main_two">#2FCCC6</color>
 </resources>

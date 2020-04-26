@@ -5,16 +5,23 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.socialminibtd.Adapter.ListUserAdapter;
 import com.example.socialminibtd.Model.ListUser;
@@ -24,6 +31,9 @@ import com.example.socialminibtd.Utils.Controller;
 import com.example.socialminibtd.Utils.RecyclerLongPressClickListener;
 import com.example.socialminibtd.View.Activity.ChatUser.ChatActivity;
 import com.example.socialminibtd.View.Activity.Dashbroad.DashboardActivity;
+import com.example.socialminibtd.View.Dialog.GroupChatsDialog.GroupChatsDialog;
+import com.example.socialminibtd.View.Dialog.GroupCreate.GroupCreateDialog;
+import com.example.socialminibtd.View.Dialog.SettingsDialog.SettingsDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,13 +45,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 
-public class UserFragment extends Fragment implements IUserFragmentView {
+public class UserFragment extends Fragment implements IUserFragmentView, View.OnClickListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-//    private String mParam1;
-//    private String mParam2;
-
 
     private View mView;
     private DashboardActivity mDashboardActivity;
@@ -51,16 +58,8 @@ public class UserFragment extends Fragment implements IUserFragmentView {
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;
     private EditText search_list_user;
+    private TextView txt_group_add_user;
 
-
-//    public static UserFragment newInstance(String param1, String param2) {
-//        UserFragment fragment = new UserFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +68,7 @@ public class UserFragment extends Fragment implements IUserFragmentView {
         mDashboardActivity = (DashboardActivity) getActivity();
 
         if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -90,7 +88,6 @@ public class UserFragment extends Fragment implements IUserFragmentView {
 
         onSearchListUser();
 
-        onClickToChat();
 
         return mView;
     }
@@ -102,6 +99,10 @@ public class UserFragment extends Fragment implements IUserFragmentView {
         recyc_list_user = mView.findViewById(R.id.recyc_list_user);
 
         search_list_user = mView.findViewById(R.id.search_list_user);
+
+        txt_group_add_user = mView.findViewById(R.id.txt_group_add_user);
+        txt_group_add_user.setOnClickListener(this);
+
 
         recyc_list_user.setHasFixedSize(true);
 
@@ -245,28 +246,81 @@ public class UserFragment extends Fragment implements IUserFragmentView {
     }
 
     @Override
-    public void onClickToChat() {
+    public void onShowDialogCreateGroup() {
 
-//        if (mUserArrayList != null) {
-//
-//
-//            recyc_list_user.addOnItemTouchListener(new RecyclerLongPressClickListener(mDashboardActivity, recyc_list_user, new RecyclerLongPressClickListener.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(View view, int position) {
-//
-//                    Intent intent = new Intent(mDashboardActivity, ChatActivity.class);
-//                    intent.putExtra("hisUid", mUserArrayList.get(position).getUid());
-//                    mDashboardActivity.startActivity(intent);
-//
-//
-//                }
-//
-//                @Override
-//                public void onLongItemClick(View view, int position) {
-//
-//                }
-//            }));
-//        }
+        GroupCreateDialog dialog_group = new GroupCreateDialog();
+        dialog_group.setCancelable(true);
+        dialog_group.show(getFragmentManager(), "GroupCreateDialog");
 
+    }
+
+    @Override
+    public void onShowDialogChatsGroup() {
+
+        GroupChatsDialog dialog_group_chats = new GroupChatsDialog();
+        dialog_group_chats.setCancelable(true);
+        dialog_group_chats.show(getFragmentManager(), "GroupChatsDialog");
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+
+            case R.id.txt_group_add_user:
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+
+                    PopupMenu popupMenu = new PopupMenu(mDashboardActivity, txt_group_add_user, Gravity.END);
+
+                    popupMenu.getMenu().add(Menu.NONE, 0, 0, mDashboardActivity.getResources().getString(R.string.txt_create_group));
+                    popupMenu.getMenu().add(Menu.NONE, 1, 0, mDashboardActivity.getResources().getString(R.string.txt_show_group));
+
+
+                    popupMenu.show();
+
+
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+
+                            switch (item.getItemId()) {
+
+                                case 0:
+
+                                    onShowDialogCreateGroup();
+
+                                    break;
+
+                                case 1:
+
+                                    onShowDialogChatsGroup();
+
+                                    break;
+                            }
+
+                            return false;
+                        }
+                    });
+
+                }
+
+
+                break;
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

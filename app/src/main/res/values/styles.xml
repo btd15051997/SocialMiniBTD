@@ -17,11 +17,16 @@
 
     <style name="StyleEditTextSignInSignUP">
         <item name="android:layout_marginRight">@dimen/_10sdp</item>
-        <item name="android:textColor">@color/black_two</item>
-        <item name="android:textColorHint">@color/black_two</item>
+        <item name="android:textColor">@color/color_background_main</item>
+        <item name="android:textColorHint">@color/black_three</item>
         <item name="android:textSize">@dimen/_14ssp</item>
         <item name="android:layout_marginLeft">@dimen/_15sdp</item>
         <item name="android:padding">@dimen/_10sdp</item>
+    </style>
+    <!--full width for dialog-->
+    <style name="Custom_Dialog" parent="ThemeOverlay.AppCompat.Light">
+        <item name="windowMinWidthMajor">100%</item>
+        <item name="windowMinWidthMinor">65%</item>
     </style>
 
     <style name="DialogSlideAnim_leftright" parent="@android:style/Theme.Dialog">
@@ -34,15 +39,22 @@
     <style name="DialogThemeforview">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@color/white</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowAnimationStyle">@style/DialogAnimationleftright</item>
+        <item name="android:windowAnimationStyle">@style/DialogAnimationBottomTop</item>
     </style>
+
+
 
     <style name="DialogAnimationleftright">
         <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
         <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+    </style>
+
+    <style name="DialogAnimationBottomTop">
+        <item name="android:windowEnterAnimation">@anim/slide_in_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
 
 

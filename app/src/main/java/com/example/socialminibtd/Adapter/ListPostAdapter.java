@@ -4,14 +4,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -19,6 +22,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blogspot.atifsoftwares.circularimageview.CircularImageView;
@@ -28,8 +34,7 @@ import com.example.socialminibtd.Utils.Const;
 import com.example.socialminibtd.Utils.Controller;
 import com.example.socialminibtd.View.Activity.AddPost.AddPostActivity;
 import com.example.socialminibtd.View.Activity.PostDetail.PostDetailActivity;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.socialminibtd.View.Dialog.PostLikedBy.PostLikedByDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,8 +45,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+
 
 public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHolder> {
 
@@ -84,17 +94,24 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
         String uName = arrayList.get(position).getuName();
 
 
-        String pTitle = arrayList.get(position).getuTitle();
-        String pTime = arrayList.get(position).getuTime();
-        final String pImage = arrayList.get(position).getuImage();
-        final String pIDTime = arrayList.get(position).getuIDTime();
-        String pDescription = arrayList.get(position).getuDescription();
-        final String pLike = arrayList.get(position).getuLikes();
+        final String pTitle = arrayList.get(position).getpTitle();
+        String pTime = arrayList.get(position).getpTime();
+        final String pImage = arrayList.get(position).getpImage();
+        final String pIDTime = arrayList.get(position).getpIDTime();
+        final String pDescription = arrayList.get(position).getpDescription();
+        final String pLike = arrayList.get(position).getpLikes();
         String pComment = arrayList.get(position).getpComments();
 
         holder.txt_description_listpost.setText(pDescription);
         holder.txt_name_listpost.setText(uName);
+
+
+//        Calendar cal =Calendar.getInstance(Locale.ENGLISH);
+//        cal.setTimeInMillis(Long.parseLong(pIDTime));
+//        String dateTime = DateFormat.format("dd-MM-yyyy hh:mm aa",cal).toString();
+
         holder.txt_date_listpost.setText(pTime);
+
         holder.txt_title_listpost.setText(pTitle);
 
         holder.txt_sumlike_listpost.setText(pLike + " Likes");
@@ -106,12 +123,12 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
         try {
 
-            Picasso.get().load(uDp).placeholder(R.drawable.ic_account).into(holder.img_account_listpost);
+            Picasso.get().load(uDp).placeholder(R.drawable.icon_logoapp).into(holder.img_account_listpost);
             Controller.appLogDebug(Const.LOG_DAT, uDp.toString());
 
         } catch (Exception e) {
 
-            Picasso.get().load(R.drawable.ic_account).into(holder.img_account_listpost);
+           holder.img_account_listpost.setImageResource(R.drawable.icon_logoapp);
 
         }
 
@@ -151,73 +168,196 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
             }
         });
 
-        holder.txt_click_likepost.setOnClickListener(new View.OnClickListener() {
+
+        holder.txt_sumlike_listpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                final int pLikes = Integer.parseInt(arrayList.get(position).getuLikes());
+                FragmentActivity activity = (FragmentActivity) (context);
+                FragmentManager fm = activity.getSupportFragmentManager();
 
-                mProgressLike = true;
+                PostLikedByDialog postLikedByDialog = new PostLikedByDialog();
+                postLikedByDialog.setCancelable(true);
 
-                // get id of the post cliked
-                final String postId = arrayList.get(position).getuIDTime();
+                Bundle bundle = new Bundle();
 
-                likesRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                bundle.putString("postID", pIDTime);
 
-                        if (mProgressLike) {
+                postLikedByDialog.setArguments(bundle);
 
-                            if (dataSnapshot.child(postId).hasChild(myUid)) {
-                                //already like post, so remove like
-                                postsRef.child(postId).child("uLikes").setValue("" + (pLikes - 1));
+                postLikedByDialog.show(fm, "DialogPostLikedBy");
 
-                                likesRef.child(postId).child(myUid).removeValue();
 
-                                mProgressLike = false;
+            }
+        });
 
-                            } else {
-                                //not liked, like it
-                                postsRef.child(postId).child("uLikes").setValue("" + (pLikes + 1));
+        holder.txt_click_likepost.setOnClickListener(v -> {
 
-                                likesRef.child(postId).child(myUid).setValue("Liked"); // set any value
+            final int pLikes = Integer.parseInt(arrayList.get(position).getpLikes());
 
-                                mProgressLike = false;
-                            }
+            mProgressLike = true;
+
+            // get id of the post cliked
+            final String postId = arrayList.get(position).getpIDTime();
+
+            likesRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if (mProgressLike) {
+
+                        if (dataSnapshot.child(postId).hasChild(myUid)) {
+                            //already like post, so remove like
+                            postsRef.child(postId).child("pLikes").setValue("" + (pLikes - 1));
+
+                            likesRef.child(postId).child(myUid).removeValue();
+
+                            mProgressLike = false;
+
+                        } else {
+                            //not liked, like it
+                            postsRef.child(postId).child("pLikes").setValue("" + (pLikes + 1));
+
+                            likesRef.child(postId).child(myUid).setValue("Liked"); // set any value
+
+                            mProgressLike = false;
+
+                            addHistoryNotification("" + uid, postId, "Liked your post");
 
                         }
 
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
 
-                    }
-                });
+                }
+            });
 
-            }
         });
 
-        holder.txt_comment_post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.txt_comment_post.setOnClickListener(v -> onStartPostDetail(pIDTime));
 
-                onStartPostDetail(pIDTime);
+
+        holder.txt_share_post.setOnClickListener(v -> {
+
+            /*some posts contains only text, and some contains image and text so
+            , we will handle them both*/
+            //get image from imageview
+
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) holder.img_content_listpost.getDrawable();
+
+            if (bitmapDrawable == null) {
+                //post without image
+
+                onShareTextOnly(pTitle, pDescription);
+
+            } else {
+
+                //covert bitmap
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+
+                onShareTextAndImage(pTitle, pDescription, bitmap);
+
 
             }
+
         });
+    }
+
+    private void onShareTextAndImage(String pTitle, String pDescription, Bitmap bitmap) {
+
+        //concatenate title and description to share
+        String shareBody = pTitle + "\n" + pDescription;
+
+        //first we will  save this image in cache, get the saved image uri
+        Uri uri = saveImageToShare(bitmap);
+
+        //share intent
+        //share intent
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);// in case you share via an email app
+        intent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Subject here");
+        intent.setType("image/png");
+        context.startActivity(Intent.createChooser(intent, "Share Via"));
 
 
-        holder.txt_share_post.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    }
+
+    private Uri saveImageToShare(Bitmap bitmap) {
+
+        File imageFolder = new File(context.getCacheDir(), "images");
+        Uri uri = null;
+
+        try {
+
+            imageFolder.mkdir(); // create if not exists
+            File file = new File(imageFolder, "shared_image.png");
+            FileOutputStream stream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+            stream.flush();
+            stream.close();
+
+            uri = FileProvider.getUriForFile(context, "com.example.socialminibtd.fileprovider", file);
 
 
-                Toast.makeText(context, "Share", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
 
-            }
-        });
+            Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+
+        return uri;
+    }
+
+    private void onShareTextOnly(String pTitle, String pDescription) {
+
+        //concatenate title and description to share
+        String shareBody = pTitle + "\n" + pDescription;
+
+        //share intent
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Subject  here");// in case you share via an email app
+        intent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        context.startActivity(Intent.createChooser(intent, "Share Via"));// message to show in share dialog
+
+    }
+
+    private void addHistoryNotification(String hisUid, String pId, String message) {
+
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+
+        HashMap<Object, String> hashMap = new HashMap<>();
+        hashMap.put("pId", pId);
+        hashMap.put("timestamp", timeStamp);
+        hashMap.put("pUid", hisUid);
+        hashMap.put("notification", message);
+        hashMap.put("sUid", myUid);
+
+
+        DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("User");
+        Ref.child(hisUid).child("Notifications")
+                .child(timeStamp)
+                .setValue(hashMap)
+                .addOnSuccessListener(aVoid -> Controller.appLogDebug(Const.LOG_DAT, "Add notification success"))
+                .addOnFailureListener(e -> Controller.appLogDebug(Const.LOG_DAT, e.toString()));
+
+    }
+
+
+    public String onGetTimeCurrent() {
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("EEEE dd-MMM-yyyy hh:mm:ss a");
+        String datetime = dateformat.format(c.getTime());
+
+        return datetime;
+
     }
 
     private void onStartPostDetail(String pIDTime) {
@@ -279,65 +419,52 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
             popupMenu.show();
 
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
+            popupMenu.setOnMenuItemClickListener(item -> {
 
-                    if (item.getItemId() == 0) {
+                if (item.getItemId() == 0) {
 
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
-                        alertDialog.setTitle("Do you want to delete the post ?");
+                    alertDialog.setTitle("Do you want to delete the post ?");
 
-                        alertDialog.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                    alertDialog.setNegativeButton("Yes", (dialog, which) -> {
 
-                                if (pImage.equals("noImage")) {
+                        if (pImage.equals("noImage")) {
 
-                                    deleteWithoutImage(pIDTime);
+                            deleteWithoutImage(pIDTime);
 
-                                } else {
+                        } else {
 
-                                    deleteWithImage(pIDTime, pImage);
+                            deleteWithImage(pIDTime, pImage);
 
-                                }
+                        }
 
 
-                            }
-                        });
+                    });
 
-                        alertDialog.setPositiveButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                    alertDialog.setPositiveButton("No", (dialog, which) -> dialog.dismiss());
 
-                                dialog.dismiss();
-
-                            }
-                        });
-
-                        AlertDialog dialog = alertDialog.create();
-                        dialog.show();
+                    AlertDialog dialog = alertDialog.create();
+                    dialog.show();
 
 
-                    } else if (item.getItemId() == 1) {
+                } else if (item.getItemId() == 1) {
 
-                        //start AddPostActivity with "editPost" and the id of the post clicked
-                        Intent intent = new Intent(context, AddPostActivity.class);
+                    //start AddPostActivity with "editPost" and the id of the post clicked
+                    Intent intent = new Intent(context, AddPostActivity.class);
 
-                        intent.putExtra("key", "editPost");
-                        intent.putExtra("editPostId", pIDTime);
+                    intent.putExtra("key", "editPost");
+                    intent.putExtra("editPostId", pIDTime);
 
-                        context.startActivity(intent);
+                    context.startActivity(intent);
 
-                    } else if (item.getItemId() == 2) {
+                } else if (item.getItemId() == 2) {
 
-                        onStartPostDetail(pIDTime);
+                    onStartPostDetail(pIDTime);
 
-                    }
-
-                    return false;
                 }
+
+                return false;
             });
 
         }
@@ -348,54 +475,49 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
         final ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Deleting...");
+
         /*
          *1: Delete Image url using url
          *2: Delete from database using post id*/
 
         StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl(pImage);
-        picRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
+        picRef.delete().addOnSuccessListener(aVoid -> {
 
-                //delete database
+            //delete database
 
-                Query query = FirebaseDatabase.getInstance().getReference("Posts").orderByChild("uIDTime").equalTo(pIDTime);
+            Query query = FirebaseDatabase.getInstance().getReference("Posts").orderByChild("pIDTime").equalTo(pIDTime);
 
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                            ds.getRef().removeValue(); // remove values from firebase when pid matches
-
-                        }
-
-                        Controller.showLongToast("Deleted successfully", context);
-
-                        progressDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        progressDialog.dismiss();
-                        Controller.appLogDebug(Const.LOG_DAT, databaseError.getMessage());
-                        Controller.showLongToast(databaseError.getMessage().toString(), context);
+                        ds.getRef().removeValue(); // remove values from firebase when pid matches
 
                     }
-                });
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                    Controller.showLongToast(context.getResources().getString(R.string.txt_deleted_successfully), context);
 
-                progressDialog.dismiss();
-                Controller.showLongToast(e.toString(), context);
-                Controller.appLogDebug(Const.LOG_DAT, "" + e.toString());
+                    progressDialog.dismiss();
+                }
 
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    progressDialog.dismiss();
+                    Controller.appLogDebug(Const.LOG_DAT, databaseError.getMessage());
+                    Controller.showLongToast(databaseError.getMessage().toString(), context);
+
+                }
+            });
+
+        }).addOnFailureListener(e -> {
+
+            progressDialog.dismiss();
+            Controller.showLongToast(e.toString(), context);
+            Controller.appLogDebug(Const.LOG_DAT, "" + e.toString());
+
         });
 
     }
@@ -406,7 +528,7 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
         progressDialog.setMessage("Deleting...");
 
         //delete database
-        Query query = FirebaseDatabase.getInstance().getReference("Posts").orderByChild("uIDTime").equalTo(pIDTime);
+        Query query = FirebaseDatabase.getInstance().getReference("Posts").orderByChild("pIDTime").equalTo(pIDTime);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -417,7 +539,7 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
                     ds.getRef().removeValue(); // remove values from firebase when pid matches
 
                 }
-                Controller.showLongToast("Deleted successfully", context);
+                Controller.showLongToast(context.getResources().getString(R.string.txt_deleted_successfully), context);
 
                 progressDialog.dismiss();
             }
@@ -444,9 +566,7 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
         CircularImageView img_account_listpost;
         ImageView img_content_listpost;
-        TextView txt_name_listpost, txt_date_listpost, txt_more_listpost, txt_title_listpost
-                , txt_description_listpost, txt_sumlike_listpost, txt_click_likepost
-                , txt_comment_post, txt_share_post, tv_sumcomment_post;
+        TextView txt_name_listpost, txt_date_listpost, txt_more_listpost, txt_title_listpost, txt_description_listpost, txt_sumlike_listpost, txt_click_likepost, txt_comment_post, txt_share_post, tv_sumcomment_post;
 
 
         public ViewHolder(@NonNull View itemView) {

@@ -1,5 +1,7 @@
 package com.example.socialminibtd.View.Fragment.HomFragment;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,25 +11,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blogspot.atifsoftwares.circularimageview.CircularImageView;
 import com.example.socialminibtd.Adapter.ListPostAdapter;
+import com.example.socialminibtd.Adapter.NotificationAdapter;
+import com.example.socialminibtd.Model.ListNotification;
 import com.example.socialminibtd.Model.ListPost;
 import com.example.socialminibtd.R;
 import com.example.socialminibtd.Utils.Const;
 import com.example.socialminibtd.Utils.Controller;
 import com.example.socialminibtd.View.Activity.Dashbroad.DashboardActivity;
+import com.example.socialminibtd.View.Activity.NewsActivity.NewsActivity;
+import com.example.socialminibtd.View.Dialog.NotificationsDialog.NotificationsDialog;
 import com.example.socialminibtd.View.Fragment.ProfileFragment.ProfileFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,10 +45,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class HomeFragment extends Fragment implements IHomeFragmentView, View.OnClickListener {
 
@@ -50,8 +68,10 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
     private View mView;
     private DashboardActivity mDashboardActivity;
     private FirebaseAuth firebaseAuth;
-    private ImageView img_add_post_home;
     private EditText edt_search_listpost;
+    private TextView txt_notification_home, txt_sumnotification_home;
+    private LinearLayout linear_addpost_home;
+    private CircularImageView img_current_avt_home;
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -59,6 +79,10 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
     private RecyclerView recyclerView_Home;
     private ArrayList<ListPost> arrayList_home;
     private ListPostAdapter postAdapter;
+    final int[] count = {0};
+
+
+    private CompositeDisposable disposable = new CompositeDisposable();
 
 
     @Override
@@ -79,12 +103,70 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
         onmMappingView();
 
+        onGetImageAvatarUser();
+
         onGetDataListPost();
+
+        onGetCountNotification();
+
 
         return mView;
 
     }
 
+    private void onObserverArraylist() {
+
+        if (arrayList_home != null) {
+
+            Observable.just(arrayList_home)
+                    //thread you need the work to perform on
+                    .subscribeOn(Schedulers.io())
+                    //thread you need to handle the result on
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new Observer<ArrayList<ListPost>>() {
+                        @Override
+                        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+
+                            disposable.add(d);
+                            Log.d(Const.LOG_DAT, "Observable_onSubscribe: ");
+
+                        }
+
+                        @Override
+                        public void onNext(@io.reactivex.rxjava3.annotations.NonNull ArrayList<ListPost> listPosts) {
+
+                            postAdapter = new ListPostAdapter(arrayList_home, mDashboardActivity);
+                            postAdapter.notifyDataSetChanged();
+                            Log.d(Const.LOG_DAT, "Observable_onNext: "+arrayList_home);
+
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                            Log.d(Const.LOG_DAT, "Observable_onError: ");
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                            Log.d(Const.LOG_DAT, "Observable_onComplete: ");
+                            recyclerView_Home.setAdapter(postAdapter);
+
+                        }
+                    });
+
+        }
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        disposable.clear();
+    }
 
     @Override
     public void onmMappingView() {
@@ -93,11 +175,17 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
         img_user_sortmenu = mView.findViewById(R.id.img_user_sortmenu);
 
-        img_add_post_home = mView.findViewById(R.id.img_add_post_home);
-
         recyclerView_Home = mView.findViewById(R.id.recyc_list_post_home);
 
         edt_search_listpost = mView.findViewById(R.id.edt_search_listpost);
+
+        txt_notification_home = mView.findViewById(R.id.txt_notification_home);
+
+        linear_addpost_home = mView.findViewById(R.id.linear_addpost_home);
+
+        txt_sumnotification_home = mView.findViewById(R.id.txt_sumnotification_home);
+
+        img_current_avt_home = mView.findViewById(R.id.img_current_avt_home);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -106,7 +194,8 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
         onCustomRecyclerView();
 
         img_user_sortmenu.setOnClickListener(this);
-        img_add_post_home.setOnClickListener(this);
+        txt_notification_home.setOnClickListener(this);
+        linear_addpost_home.setOnClickListener(this);
 
         edt_search_listpost.addTextChangedListener(new TextWatcher() {
             @Override
@@ -168,13 +257,11 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
                     arrayList_home.add(listPost);
 
-                    postAdapter = new ListPostAdapter(arrayList_home, mDashboardActivity);
+              //      postAdapter = new ListPostAdapter(arrayList_home, mDashboardActivity);
 
                 }
 
-                recyclerView_Home.setAdapter(postAdapter);
-
-                //    postAdapter.notifyDataSetChanged();
+                onObserverArraylist();
 
             }
 
@@ -196,11 +283,10 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
             PopupMenu popupMenu = new PopupMenu(mDashboardActivity, img_user_sortmenu, Gravity.CENTER_HORIZONTAL);
 
-            popupMenu.getMenu().add(Menu.NONE, 0, 0, mDashboardActivity.getResources().getString(R.string.txt_logout));
+            popupMenu.getMenu().add(Menu.NONE, 0, 0, mDashboardActivity.getResources().getString(R.string.txt_new));
 
-            popupMenu.getMenu().add(Menu.NONE, 1, 0, mDashboardActivity.getResources().getString(R.string.txt_ggmap));
+            popupMenu.getMenu().add(Menu.NONE, 2, 0, mDashboardActivity.getResources().getString(R.string.txt_logout));
 
-            popupMenu.getMenu().add(Menu.NONE, 2, 0, mDashboardActivity.getResources().getString(R.string.txt_new));
 
             popupMenu.show();
 
@@ -213,20 +299,14 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
                         case 0:
 
-                            firebaseAuth.signOut();
-                            mDashboardActivity.onCheckUserCurrent();
+                            startActivity(new Intent(mDashboardActivity, NewsActivity.class));
 
                             break;
 
-                        case 1:
-
-                            Toast.makeText(mDashboardActivity, "Google map coming soon...", Toast.LENGTH_SHORT).show();
-
-                            break;
 
                         case 2:
 
-                            Toast.makeText(mDashboardActivity, "News coming soon...", Toast.LENGTH_SHORT).show();
+                            onShowDialogLogOutAccount();
 
                             break;
 
@@ -240,10 +320,149 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
     }
 
+    private void onShowDialogLogOutAccount() {
+
+        final Dialog dialog = new Dialog(mDashboardActivity, R.style.Custom_Dialog);
+
+        dialog.setCancelable(true);
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND); // This flag is required to set otherwise the setDimAmount method will not show any effect
+            window.setDimAmount(0.5f); //0 for no dim to 1 for full dim
+        }
+
+        dialog.setContentView(R.layout.dialog_logout);
+
+        TextView btn_logout_yes = (TextView) dialog.findViewById(R.id.btn_logout_yes);
+
+        dialog.show();
+
+        btn_logout_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                firebaseAuth.signOut();
+                mDashboardActivity.onCheckUserCurrent();
+
+            }
+        });
+
+        TextView btn_logout_no = (TextView) dialog.findViewById(R.id.btn_logout_no);
+
+        btn_logout_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onShowDialogNotification() {
+
+        NotificationsDialog dialogOTPFragment = new NotificationsDialog();
+        dialogOTPFragment.setCancelable(true);
+        dialogOTPFragment.show(getFragmentManager(), "NotificationsDialog");
+    }
+
+    @Override
+    public void onGetCountNotification() {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
+        databaseReference.child(mUser.getUid()).child("Notifications")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if (count != null) {
+
+                            count[0] = 0;
+
+                        }
+
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                            ListNotification listNotification = ds.getValue(ListNotification.class);
+
+                            if (!listNotification.getpUid().contains(listNotification.getsUid())) {
+
+                                count[0] = count[0] + 1;
+
+
+                            }
+
+                        }
+
+                        txt_sumnotification_home.setText(count[0] + "");
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        Controller.appLogDebug(Const.LOG_DAT, "onGetAllNotifications" + databaseError.getMessage());
+
+                    }
+                });
+
+    }
+
+    @Override
+    public void onGetImageAvatarUser() {
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
+        Query query = databaseReference.orderByChild("uid").equalTo(mUser.getUid());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    String imageUser = "" + ds.child("image").getValue();
+
+                    if (imageUser.isEmpty()) {
+
+                        img_current_avt_home.setImageResource(R.drawable.ic_account);
+
+                    } else {
+
+                        try {
+
+                            Picasso.get().load(imageUser).placeholder(R.drawable.ic_account).into(img_current_avt_home);
+
+                        } catch (Exception e) {
+
+                            Picasso.get().load(R.drawable.ic_account).into(img_current_avt_home);
+
+
+                        }
+
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     @Override
     public void onSearchListPost(final String searchQuery) {
 
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        final DatabaseReference reference = FirebaseDatabase
+                .getInstance()
+                .getReference("Posts");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -258,8 +477,8 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
                     ListPost listPost = ds.getValue(ListPost.class);
 
-                    if (listPost.getuTitle().toLowerCase().contains(searchQuery)
-                            || listPost.getuDescription().toLowerCase().contains(searchQuery)) {
+                    if (listPost.getpTitle().toLowerCase().contains(searchQuery)
+                            || listPost.getpDescription().toLowerCase().contains(searchQuery)) {
 
                         arrayList_home.add(listPost);
 
@@ -305,17 +524,20 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
                 break;
 
-            case R.id.img_add_post_home:
+            case R.id.txt_notification_home:
+
+                onShowDialogNotification();
+
+                break;
+
+            case R.id.linear_addpost_home:
 
                 mDashboardActivity.onIntentAddPost();
 
                 break;
 
+            case R.id.txt_sumnotification_home:
 
-            case R.id.img_user_home:
-
-                mDashboardActivity.onAddFragment(new ProfileFragment(), false
-                        , false, Const.TagFragment.PROFILE_FRAGMENT, true);
 
                 break;
 

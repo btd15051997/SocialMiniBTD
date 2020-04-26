@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical">
@@ -13,10 +13,9 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.github.ybq.android.spinkit.SpinKitView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/spin_kitSplash"
-            style="@style/SpinKitView.Large.FoldingCube"
+            style="@style/SpinKitView.Large.Wave"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"
             android:layout_below="@+id/img_splash"
@@ -32,9 +31,10 @@
             android:layout_below="@+id/avi"
             android:layout_marginBottom="5dp"
             android:gravity="center"
-            android:text="Loading..."
-            android:textColor="@color/color_main_one"
-            android:textSize="14sp"
+            android:text="@string/txt_loading"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="bold"
             android:visibility="visible" />
     </LinearLayout>
 </RelativeLayout>

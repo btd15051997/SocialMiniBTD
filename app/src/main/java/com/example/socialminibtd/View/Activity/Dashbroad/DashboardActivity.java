@@ -2,11 +2,14 @@ package com.example.socialminibtd.View.Activity.Dashbroad;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +21,7 @@ import com.example.socialminibtd.Utils.Controller;
 import com.example.socialminibtd.Utils.PreferenceHelper;
 import com.example.socialminibtd.View.Activity.AddPost.AddPostActivity;
 import com.example.socialminibtd.View.Activity.Login.LoginActivity;
-import com.example.socialminibtd.View.Fragment.ChatListFragment.ChatListFragment;
+import com.example.socialminibtd.View.Fragment.MessagerFragment.ChatListFragment;
 import com.example.socialminibtd.View.Fragment.HomFragment.HomeFragment;
 import com.example.socialminibtd.View.Fragment.ProfileFragment.ProfileFragment;
 import com.example.socialminibtd.View.Fragment.UserFragment.UserFragment;
@@ -29,20 +32,34 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-public class DashboardActivity extends AppCompatActivity implements IDashboardActivityView, View.OnClickListener
-        , BottomNavigationView.OnNavigationItemSelectedListener {
+public class DashboardActivity extends AppCompatActivity implements IDashboardActivityView
+        , View.OnClickListener
+        , BottomNavigationView.OnNavigationItemSelectedListener
+        , LocationListener {
 
     private FirebaseAuth firebaseAuth;
     private BottomNavigationView mBottomNavigationView;
     private String mCurrentFramentHome = "";
     private String myUid;
+    private boolean darkmode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_left);
         setContentView(R.layout.activity_dashboard);
+
+        darkmode = new PreferenceHelper(this).getDarkMode();
+        if (darkmode == true) {
+
+            //light mode
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        } else {
+
+            //dark mode
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -83,6 +100,7 @@ public class DashboardActivity extends AppCompatActivity implements IDashboardAc
 
         } else {
 
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             startActivity(new Intent(DashboardActivity.this, LoginActivity.class));
             new PreferenceHelper(DashboardActivity.this).putMyUid("");
             finish();
@@ -240,6 +258,26 @@ public class DashboardActivity extends AppCompatActivity implements IDashboardAc
 
 
         super.onBackPressed();
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
 
     }
 }

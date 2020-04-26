@@ -10,8 +10,10 @@ public interface IPostDetailActivityView {
     void onPostLike();
     void onSetLikePost();
     void onMoreSettingPost();
+    void onShowDialogPostLikedBy();
     void onDeleteWithoutImage(String postId);
     void onDeleteWithImage(String postId,String pImage);
     void onUpdateCommentCount();
+    void onAddHistoryNotification(String hisUid, String pId, String message);
     String onGetTimeCurrent();
 }

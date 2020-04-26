@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/content_setting"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -9,39 +10,155 @@
         android:id="@+id/toolbar_setting_dialog"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:background="@color/black_two">
+        android:background="@color/color_background_main">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_background_main">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerInParent="true"
                 android:layout_centerVertical="true"
-                android:gravity="end"
-                android:paddingRight="@dimen/_10sdp"
                 android:text="SETTINGS"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_18ssp"
+                android:textSize="@dimen/_16ssp"
                 android:textStyle="bold" />
 
         </RelativeLayout>
-
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch_compat"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar_setting_dialog"
         android:layout_margin="@dimen/_10sdp"
-        android:textSize="@dimen/_14ssp"
-        android:background="@drawable/edt_custom_signin_up"
-        android:textColor="@color/black"
-        android:padding="@dimen/_10sdp"
-        android:text="Post Notifications" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_notification_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/switch_compat"
+            android:layout_below="@+id/toolbar_setting_dialog"
+            android:text="Turn On/Off Notification :"
+            android:textColor="@color/color_background_main"
+            android:textSize="@dimen/_14ssp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_compat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:padding="@dimen/_10sdp"
+            android:text="Post Notifications"
+            android:textSize="@dimen/_14ssp" />
+        <TextView
+            android:id="@+id/txt_darkmode_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/switch_compat"
+            android:layout_below="@+id/toolbar_setting_dialog"
+            android:text="Dark Mode :"
+            android:textColor="@color/color_background_main"
+            android:textSize="@dimen/_14ssp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_darkmode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:padding="@dimen/_10sdp"
+            android:text="Dark Mode"
+            android:textSize="@dimen/_14ssp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Change Password :"
+            android:textColor="@color/color_background_main"
+            android:textSize="@dimen/_14ssp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_10sdp"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/_15sdp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:passwordToggleEnabled="true">
+
+
+                <EditText
+                    android:id="@+id/edt_currentpass_setting"
+                    style="@style/StyleEditTextSignInSignUP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:hint="Current Password"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/edt_newpass_setting"
+                    style="@style/StyleEditTextSignInSignUP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:hint="New Password"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/edt_re_newpass_setting"
+                    style="@style/StyleEditTextSignInSignUP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:hint=" Re - New Password"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/btn_changepass_confirm"
+                style="@style/StyleButtonSignInSignUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="center"
+                android:text="@string/txt_confirm"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
 
 </RelativeLayout>

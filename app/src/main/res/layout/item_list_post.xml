@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
     android:id="@+id/relative_item_user"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_3sdp"
     android:background="@color/white_trans"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:ignore="NamespaceTypo">
 
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardBackgroundColor="@color/white"
-        card_view:cardElevation="@dimen/_3sdp"
-        card_view:cardUseCompatPadding="true">
+        android:layout_margin="@dimen/_2sdp"
+        android:elevation="@dimen/_5sdp"
+        app:cardCornerRadius="@dimen/_5sdp"
+        app:cardUseCompatPadding="true"
+        card_view:cardBackgroundColor="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,8 +48,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_13ssp" />
+                        android:textColor="@color/color_background_main"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/txt_date_listpost"
@@ -52,7 +58,7 @@
                         android:layout_height="wrap_content"
                         android:text="30 min"
                         android:textColor="@color/dark_grey"
-                        android:textSize="@dimen/_12ssp" />
+                        android:textSize="@dimen/_11ssp" />
 
                 </LinearLayout>
 
@@ -76,7 +82,8 @@
                 android:singleLine="true"
                 android:text="Title"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_13ssp" />
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt_description_listpost"
@@ -88,6 +95,7 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp" />
 
+
             <ImageView
                 android:id="@+id/img_content_listpost"
                 android:layout_width="match_parent"
@@ -98,6 +106,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -105,20 +115,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:text="123llike"
-                    android:textColor="@color/color_background_main" />
+                    android:singleLine="true"
+                    android:text="@string/txt_like"
+                    android:textColor="@color/color_background_main"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_sumcomment_post"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:text="1 Comment"
-                    android:textColor="@color/color_background_main" />
+                    android:singleLine="true"
+                    android:text="@string/txt_comment"
+                    android:textColor="@color/color_background_main"
+                    android:textSize="@dimen/_12ssp"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_margin="@dimen/_3sdp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,13 +154,13 @@
                     android:layout_gravity="center_vertical"
                     android:layout_margin="@dimen/_3sdp"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:background="@drawable/custom_like_comment"
                     android:drawableLeft="@drawable/ic_favorite"
                     android:drawablePadding="@dimen/_3sdp"
                     android:drawingCacheQuality="low"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:padding="@dimen/_5sdp"
-                    android:text="Like"
+                    android:text="@string/txt_like"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12ssp" />
 
@@ -150,12 +170,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:background="@drawable/custom_like_comment"
                     android:drawableLeft="@drawable/ic_message"
                     android:drawablePadding="@dimen/_3sdp"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:padding="@dimen/_5sdp"
-                    android:text="Comment"
+                    android:text="@string/txt_comment"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12ssp" />
 
@@ -166,12 +186,12 @@
                     android:layout_gravity="center_vertical"
                     android:layout_margin="@dimen/_3sdp"
                     android:layout_weight="1"
-                    android:background="@null"
+                    android:background="@drawable/custom_like_comment"
                     android:drawableLeft="@drawable/ic_share"
                     android:drawablePadding="@dimen/_3sdp"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:padding="@dimen/_5sdp"
-                    android:text="Share"
+                    android:text="@string/txt_share"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12ssp" />
             </LinearLayout>

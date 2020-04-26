@@ -2,6 +2,9 @@
     <string name="app_name">SocialMiniBTD</string>
     <string name="txt_login_email_mobile">Your Email</string>
     <string name="txt_loading">Loading...</string>
+    <string name="txt_login">LOGIN</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_password">Password</string>
     <string name="txt_email_error">Please Enter Email ID!</string>
     <string name="txt_pass_error">Please Enter Password!</string>
     <string name="txt_title_error">Please Enter Title!</string>
@@ -9,8 +12,32 @@
     <string name="txt_edit_name">Edit Profile Name</string>
     <string name="txt_camera">Camera</string>
     <string name="txt_enter">Enter</string>
+    <string name="txt_phone">Phone</string>
+    <string name="txt_male">Male</string>
+    <string name="txt_female">Female</string>
+    <string name="txt_pass_sent_toemail">New password will be sent to your email!</string>
+    <string name="txt_re_password">Re-Password</string>
+
+    <string name="txt_register">REGISTER</string>
+    <string name="txt_fullname">Fullname</string>
+    <string name="txt_document">Document</string>
+    <string name="txt_like">Like</string>
+    <string name="txt_comment">Comment</string>
+    <string name="txt_share">Share</string>
+    <string name="txt_deleted_successfully">Deleted successfully</string>
+
+
+    <string name="txt_forgot_password">Forgot Password ?</string>
     <string name="txt_update">Update</string>
     <string name="txt_last_seen">Last seen at:</string>
+    <string name="txt_confirm">Confirm</string>
+    <string name="txt_or_loginwith">Or login with</string>
+    <string name="txt_register_new_acc">Click to register new account!</string>
+
+    <string name="txt_navi_home">HOME</string>
+    <string name="txt_navi_user">USER</string>
+    <string name="txt_navi_profile">PROFILE</string>
+    <string name="txt_navi_messager">MESSAGER</string>
 
     <string name="txt_cancel">Cancel</string>
     <string name="txt_seen">Seen</string>
@@ -33,15 +60,22 @@
     <string name="txt_re_pass_error">Please Enter Confrim Password!</string>
     <string name="txt_pass_confirmpass_not_match">Password and Confirmed Password doesn\'t match!</string>
     <string name="txt_pass_six_character">Password should be at least 6 characters</string>
+    <string name="txt_check_gender">Choose your gender</string>
     <string name="txt_bottom_home">Home</string>
     <string name="txt_bottom_user">User</string>
     <string name="txt_bottom_profile">Profile</string>
     <string name="txt_edit">Edit</string>
-    <string name="txt_logout">LogOut</string>
-    <string name="txt_ggmap">GoogleMap</string>
+    <string name="txt_logout">Log Out</string>
+    <string name="txt_ggmap">Google Map</string>
+    <string name="txt_create_group">Create New Group</string>
+    <string name="txt_show_group">Show Group Chats</string>
     <string name="txt_new">News</string>
     <string name="txt_view_detail">View Detail</string>
     <string name="txt_send_message">Send Message</string>
+    <string name="txt_what_you_mind">What is on your mind ?</string>
+    <string name="txt_search">Search</string>
+    <string name="txt_yes">Yes</string>
+    <string name="txt_no">No</string>
 
     <string-array name="language">
         <item>Select Language</item>

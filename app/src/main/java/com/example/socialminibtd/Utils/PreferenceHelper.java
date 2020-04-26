@@ -13,6 +13,7 @@ public class PreferenceHelper {
     public static final String PROPERTY_REG_ID = "registration_id";
     public static final String PROPERTY_APP_VERSION = "appVersion";
     public static final String NOTIFICATION_SP = "Notification_SP";
+    public static final String DARK_MODE = "dark_mode";
     public static final String MY_UID = "my_uid";
 
     public PreferenceHelper(Context ph_context) {
@@ -47,6 +48,20 @@ public class PreferenceHelper {
     public boolean getNotification_SP() {
 
         return helper.getBoolean(NOTIFICATION_SP,false);
+
+    }
+
+    public void putDarkMode(boolean dark_mode) {
+
+        SharedPreferences.Editor editor = helper.edit();
+        editor.putBoolean(DARK_MODE, dark_mode);
+        editor.apply();
+
+    }
+
+    public boolean getDarkMode() {
+
+        return helper.getBoolean(DARK_MODE,false);
 
     }
 

@@ -1,6 +1,7 @@
 package com.example.socialminibtd.View.Activity.Login;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.socialminibtd.Presenter.Activity.LoginPresenter.LoginPresenter;
@@ -39,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
     private FirebaseAuth mAuth;
     private SignInButton btn_google_login;
     private GoogleSignInClient mGoogleSignInClient;
+    private ImageView img_login_header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
         txt_register = findViewById(R.id.txt_register);
         txt_forgot_pass = findViewById(R.id.txt_forgot_pass);
         btn_google_login = findViewById(R.id.btn_google_login);
+        img_login_header = findViewById(R.id.img_login_header);
+
+        img_login_header.setAnimation(Controller.onShowAnimationBounce(getApplicationContext()));
 
 
         btn_google_login.setOnClickListener(this);
@@ -204,5 +210,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+
+
     }
 }

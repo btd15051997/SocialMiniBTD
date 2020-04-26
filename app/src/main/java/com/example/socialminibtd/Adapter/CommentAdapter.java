@@ -60,7 +60,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         holder.txt_name_commenter.setText(cName);
         holder.txt_text_commenter.setText(cComment);
-        holder.txt_date_commenter.setText(cDate);
+        holder.txt_date_commenter.setText(Controller.convertDateTime(cDate));
 
         try {
 
