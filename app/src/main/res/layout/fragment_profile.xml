@@ -35,12 +35,11 @@
                     android:background="@drawable/edt_custom_signin_up"
                     android:drawableLeft="@drawable/ic_search"
                     android:gravity="center"
-                    android:hint="Search Posts"
+                    android:hint="@string/txt_search"
                     android:imeOptions="actionSearch"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
                     android:textColor="@color/black_two"
-                    android:textColorHint="@color/black_two"
                     android:textSize="@dimen/_12ssp"
                     android:textStyle="bold" />
 
@@ -67,7 +66,7 @@
                 android:id="@+id/img_background_profile"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_150sdp"
-                android:background="@color/black_two"
+                android:background="@color/black_three"
                 android:scaleType="fitXY" />
 
 
@@ -87,7 +86,6 @@
                     android:src="@drawable/icon_logoapp" />
 
                 <androidx.cardview.widget.CardView
-                    app:cardBackgroundColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -97,6 +95,7 @@
                     android:layout_toRightOf="@+id/img_avatar_profile"
                     android:elevation="@dimen/_5sdp"
                     android:padding="@dimen/_2sdp"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/_10sdp">
 
                     <LinearLayout
@@ -104,32 +103,34 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:drawingCacheQuality="low"
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_toLeftOf="@+id/img_edit_text_profile"
                         android:layout_toRightOf="@+id/img_avatar_profile"
+                        android:drawingCacheQuality="low"
                         android:orientation="vertical">
 
                         <TextView
-                            android:drawablePadding="@dimen/_3sdp"
-                            android:drawableLeft="@drawable/ic_account_circle"
                             android:id="@+id/txt_name_profile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/ic_account_circle"
+                            android:drawableRight="@drawable/ic_edit"
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:gravity="center_vertical"
                             android:singleLine="true"
                             android:text="Name"
-                            android:drawableRight="@drawable/ic_edit"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_14ssp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:drawablePadding="@dimen/_3sdp"
-                            android:drawableLeft="@drawable/ic_email"
                             android:id="@+id/txt_email_profile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_2sdp"
+                            android:drawableLeft="@drawable/ic_email"
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:gravity="center_vertical"
                             android:singleLine="true"
                             android:text="Email"
                             android:textColor="@color/black_three"
@@ -137,16 +138,38 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:layout_marginTop="@dimen/_2sdp"
-                            android:drawablePadding="@dimen/_3sdp"
-                            android:drawableLeft="@drawable/ic_phone"
                             android:id="@+id/txt_phone_profile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:drawableLeft="@drawable/ic_phone"
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:gravity="center_vertical"
                             android:singleLine="true"
                             android:text="Phone"
                             android:textColor="@color/black_three"
                             android:textSize="@dimen/_11ssp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:background="@color/black_three"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"/>
+                        <TextView
+                            android:id="@+id/txt_follow_by"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:drawableLeft="@drawable/ic_favorite"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:layout_margin="@dimen/_2sdp"
+                            android:text="Followed by 23 people"
+                            android:textColor="@color/color_background_main"
+                            android:textSize="@dimen/_13ssp"
                             android:textStyle="bold" />
 
 
@@ -161,13 +184,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relative_info"
-                app:cardBackgroundColor="@color/white"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/_20sdp"
                 android:layout_marginRight="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_5sdp"
                 android:elevation="@dimen/_5sdp"
                 android:padding="@dimen/_2sdp"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/_5sdp">
 
                 <LinearLayout
@@ -203,9 +226,9 @@
                             android:layout_margin="@dimen/_5sdp"
                             android:drawableLeft="@drawable/ic_image"
                             android:drawablePadding="@dimen/_5sdp"
-                            android:padding="@dimen/_5sdp"
                             android:drawingCacheQuality="auto"
                             android:gravity="center"
+                            android:padding="@dimen/_5sdp"
                             android:textSize="@dimen/_10ssp" />
 
                     </LinearLayout>

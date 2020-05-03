@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.blogspot.atifsoftwares.circularimageview.CircularImageView;
 import com.example.socialminibtd.Presenter.Activity.SignUpPresenter.SignUpPresenter;
 import com.example.socialminibtd.R;
 import com.example.socialminibtd.Utils.Controller;
@@ -26,7 +27,8 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     private EditText edt_login_email, edt_signup_pass, edt_signup_re_pass, edt_signup_name, edt_signup_phone;
     private Button btn_signup_confirm;
     private SignUpPresenter mSignUpPresenter;
-    private ImageView img_male_female,img_register_header;
+    private ImageView img_male_female;
+    private CircularImageView img_register_header;
     private FirebaseAuth mAuth;
     private RadioButton radio_men, radio_girl;
     private String FeOrMale ="";
@@ -81,17 +83,14 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     }
 
     CompoundButton.OnCheckedChangeListener listenerRadio
-            = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            = (compoundButton, b) -> {
 
-            if (b) {
+                if (b) {
 
-                FeOrMale = compoundButton.getText().toString().trim();
+                    FeOrMale = compoundButton.getText().toString().trim();
 
-            }
-        }
-    };
+                }
+            };
 
     @Override
     public void onIntentProfile() {

@@ -9,13 +9,13 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_userlist"
         android:layout_width="match_parent"
-        android:background="@color/color_background_main"
+        android:background="@drawable/layout_toolbar"
         android:layout_height="?android:attr/actionBarSize">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_background_main"
+            android:background="@drawable/layout_toolbar"
             android:layout_marginRight="@dimen/_10sdp">
 
             <EditText
@@ -34,7 +34,6 @@
                 android:singleLine="true"
                 android:layout_toLeftOf="@+id/txt_group_add_user"
                 android:textColor="@color/black"
-                android:textColorHint="@color/black"
                 android:textSize="@dimen/_12ssp"
                 android:textStyle="bold" />
 

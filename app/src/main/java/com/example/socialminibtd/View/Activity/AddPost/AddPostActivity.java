@@ -456,25 +456,11 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
         //send volley object request
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", notificationJo
-                , new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-                Controller.appLogDebug(Const.LOG_DAT, "onSendPostNotification reponse :" + response.toString());
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                Controller.appLogDebug(Const.LOG_DAT, "onSendPostNotification error :" + error.toString());
-
-            }
-        }) {
+                , response -> Controller.appLogDebug(Const.LOG_DAT, "onSendPostNotification reponse :" + response.toString())
+                , error -> Controller.appLogDebug(Const.LOG_DAT, "onSendPostNotification error :" + error.toString())) {
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
 
                 HashMap<String, String> header = new HashMap<>();
                 header.put("Authorization"
@@ -504,74 +490,71 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
             StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filePathName);
 
-            storageReference.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            storageReference.putBytes(data).addOnSuccessListener(taskSnapshot -> {
 
-                    //image is uploaded to firebase storage, now get it is url
+                //image is uploaded to firebase storage, now get it is url
 
-                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
 
-                    while (!uriTask.isSuccessful()) ;
+                while (!uriTask.isSuccessful()) ;
 
-                    String downloadUri = uriTask.getResult().toString();
+                String downloadUri = uriTask.getResult().toString();
 
-                    if (uriTask.isSuccessful()) {
+                if (uriTask.isSuccessful()) {
 
-                        // url received upload post to firebase database
-                        HashMap<Object, String> hashMap = new HashMap<>();
-                        hashMap.put("uid", uid);
-                        hashMap.put("uName", name);
-                        hashMap.put("uEmail", email);
-                        hashMap.put("uDp", dp);
+                    // url received upload post to firebase database
+                    HashMap<Object, String> hashMap = new HashMap<>();
+                    hashMap.put("uid", uid);
+                    hashMap.put("uName", name);
+                    hashMap.put("uEmail", email);
+                    hashMap.put("uDp", dp);
 
-                        hashMap.put("pIDTime", timeStamp);
-                        hashMap.put("pTitle", title);
-                        hashMap.put("pLikes", "0");
-                        hashMap.put("pComments", "0");
-                        hashMap.put("pDescription", description);
-                        hashMap.put("pImage", downloadUri);
-                        hashMap.put("pTime", timeStamp);
+                    hashMap.put("pIDTime", timeStamp);
+                    hashMap.put("pTitle", title);
+                    hashMap.put("pLikes", "0");
+                    hashMap.put("pComments", "0");
+                    hashMap.put("pDescription", description);
+                    hashMap.put("pImage", downloadUri);
+                    hashMap.put("pTime", timeStamp);
 
-                        Controller.appLogDebug(Const.LOG_DAT + " Post hashmap", "" + hashMap);
+                    Controller.appLogDebug(Const.LOG_DAT + " Post hashmap", "" + hashMap);
 
-                        //path to store post data
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
-                        // put data in this ref
-                        ref.child(timeStamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
+                    //path to store post data
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
+                    // put data in this ref
+                    ref.child(timeStamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
 
-                                Controller.dimissProgressDialog();
-                                Controller.showLongToast("Post published", AddPostActivity.this);
-                                onResetTextImage();
+                            Controller.dimissProgressDialog();
+                            Controller.showLongToast("Post published", AddPostActivity.this);
+                            onResetTextImage();
 
-                                onPrepareNotificaion("" + timeStamp
-                                        , "" + name + " added new post "
-                                        , "" + title + "\n" + description
-                                        , "PostNotification"
-                                        , "POST");
+                            onPrepareNotificaion("" + timeStamp
+                                    , "" + name + " added new post "
+                                    , "" + title + "\n" + description
+                                    , "PostNotification"
+                                    , "POST");
 
-                                onBackPressed();
-                                finish();
+                            onBackPressed();
+                            finish();
 
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
 
-                                Controller.dimissProgressDialog();
-                                Controller.showLongToast("Upload form post Failed" + e.toString(), AddPostActivity.this);
-                                Controller.appLogDebug(Const.LOG_DAT + " Upload form post Failed", "" + e.toString());
+                            Controller.dimissProgressDialog();
+                            Controller.showLongToast("Upload form post Failed" + e.toString(), AddPostActivity.this);
+                            Controller.appLogDebug(Const.LOG_DAT + " Upload form post Failed", "" + e.toString());
 
 
-                            }
-                        });
+                        }
+                    });
 
-
-                    }
 
                 }
+
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {

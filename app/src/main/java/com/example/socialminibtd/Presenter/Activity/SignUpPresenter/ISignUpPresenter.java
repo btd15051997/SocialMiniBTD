@@ -7,4 +7,5 @@ public interface ISignUpPresenter {
     void onHandleSignNormal(String email, String pass, String name, String phone, String re_pass,String sex, FirebaseAuth auth);
 
     void onPutAuthToRealTimeDatabase(FirebaseUser user,String name,String phone,String gende);
+    void onAddNodeFollow(FirebaseUser user,String name,String phone,String gende);
 }

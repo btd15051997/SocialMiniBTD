@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blogspot.atifsoftwares.circularimageview.CircularImageView;
 import com.example.socialminibtd.Presenter.Activity.LoginPresenter.LoginPresenter;
 import com.example.socialminibtd.R;
 import com.example.socialminibtd.Utils.Const;
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginActivityVi
     private FirebaseAuth mAuth;
     private SignInButton btn_google_login;
     private GoogleSignInClient mGoogleSignInClient;
-    private ImageView img_login_header;
+    private CircularImageView img_login_header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

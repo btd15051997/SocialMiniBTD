@@ -128,6 +128,15 @@
                 android:textSize="@dimen/_11ssp"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/btn_click_to_follow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_3sdp"
+                android:background="@drawable/btn_custom_signin_up"
+                android:text="Follow"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp" />
 
         </LinearLayout>
 

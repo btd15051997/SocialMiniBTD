@@ -36,7 +36,7 @@
                     android:layout_toLeftOf="@+id/img_user_sortmenu"
                     android:layout_toRightOf="@+id/relative_header_home"
                     android:background="@drawable/edt_custom_signin_up"
-                    android:drawableRight="@drawable/ic_search"
+                    android:drawableLeft="@drawable/ic_search"
                     android:gravity="center_horizontal"
                     android:hint="@string/txt_search"
                     android:imeOptions="actionSearch"

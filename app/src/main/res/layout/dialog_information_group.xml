@@ -1,137 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/_5sdp"
-        android:background="@color/black_three"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            android:background="@color/color_background_main">
+            android:layout_height="match_parent"
+            android:background="@color/white_trans"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:contentPadding="@dimen/_3sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_5sdp"
+                android:orientation="vertical">
 
-                <TextView
+                <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="Groups Detail"
-                    android:gravity="center"
-                    android:textSize="@dimen/_14ssp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/txt_title_inforgroup"
-                    android:layout_width="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="Title"
-                    android:gravity="center"
-                    android:textSize="@dimen/_13ssp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white_two"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="?android:attr/actionBarSize"
+                    android:background="@drawable/layout_toolbar">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_title_inforgroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:text="Title"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_16ssp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                </androidx.appcompat.widget.Toolbar>
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_3sdp"
+                    app:cardBackgroundColor="@color/color_background_main"
+                    app:cardCornerRadius="@dimen/_5sdp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_margin="@dimen/_3sdp"
+                        android:weightSum="10">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_weight="6"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txt_description_inforgroup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:text="Description Group"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_15ssp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txt_namecreator_inforgroup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/_3sdp"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:text="Role..."
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_14ssp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txt_editgroup_inforgroup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:drawableLeft="@drawable/ic_edit"
+                                android:drawablePadding="@dimen/_5sdp"
+                                android:text="Edit Group"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_13ssp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txt_leavegroup_inforgroup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_3sdp"
+                                android:drawableLeft="@drawable/ic_logout"
+                                android:drawablePadding="@dimen/_5sdp"
+                                android:text="Leave Group"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_13ssp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/txt_participant_n_inforgroup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:drawableLeft="@drawable/ic_group_add"
+                                android:drawablePadding="@dimen/_5sdp"
+                                android:text="Participant(N)"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_13ssp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <com.blogspot.atifsoftwares.circularimageview.CircularImageView
+                            android:id="@+id/img_imgmain_group_infor"
+                            android:layout_width="@dimen/_110sdp"
+                            android:layout_height="@dimen/_110sdp"
+                            android:layout_gravity="center"
+                            android:layout_weight="4"
+                            android:background="@drawable/icon_logoapp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyc_participant_inforgroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_participant_add" />
 
             </LinearLayout>
 
-
-        </androidx.appcompat.widget.Toolbar>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
-
-            <ImageView
-                android:id="@+id/img_imgmain_group_infor"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_150sdp"
-                android:layout_marginLeft="@dimen/_10sdp"
-                android:layout_marginRight="@dimen/_10sdp" />
+        </androidx.cardview.widget.CardView>
 
 
-        </RelativeLayout>
+    </RelativeLayout>
 
-        <TextView
-            android:id="@+id/txt_description_inforgroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_5sdp"
-            android:gravity="center"
-            android:text="Description Group"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_14ssp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txt_namecreator_inforgroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_5sdp"
-            android:gravity="center"
-            android:text="Role"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_14ssp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txt_editgroup_inforgroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:drawableLeft="@drawable/ic_edit"
-            android:drawablePadding="@dimen/_5sdp"
-            android:text="Edit Group"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13ssp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txt_leavegroup_inforgroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:drawableLeft="@drawable/ic_logout"
-            android:drawablePadding="@dimen/_5sdp"
-            android:text="Leave Group"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13ssp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txt_participant_n_inforgroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:drawableLeft="@drawable/ic_group_add"
-            android:drawablePadding="@dimen/_5sdp"
-            android:text="Participant(N)"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13ssp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyc_participant_inforgroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:layout_marginTop="@dimen/_5sdp"
-            tools:listitem="@layout/item_participant_add" />
-
-
-    </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

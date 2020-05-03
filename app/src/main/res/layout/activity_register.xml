@@ -10,12 +10,14 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-    <View
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/_150sdp"
-        android:background="@color/color_new"
-        android:orientation="vertical" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_200sdp"
+        android:orientation="vertical"
+        app:cardBackgroundColor="@color/color_new"
+        app:cardCornerRadius="@dimen/_10sdp"/>
 
 
     <androidx.cardview.widget.CardView
@@ -59,7 +61,7 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="center"
                     android:text="@string/txt_register"
-                    android:textColor="@color/black_two"
+                    android:textColor="@color/color_background_main"
                     android:textSize="@dimen/_16ssp" />
 
                 <com.google.android.material.textfield.TextInputLayout

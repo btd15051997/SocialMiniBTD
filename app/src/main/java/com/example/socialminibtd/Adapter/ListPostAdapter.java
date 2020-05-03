@@ -51,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHolder> {
@@ -106,11 +107,11 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
         holder.txt_name_listpost.setText(uName);
 
 
-//        Calendar cal =Calendar.getInstance(Locale.ENGLISH);
-//        cal.setTimeInMillis(Long.parseLong(pIDTime));
-//        String dateTime = DateFormat.format("dd-MM-yyyy hh:mm aa",cal).toString();
+        Calendar cal =Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(Long.parseLong(pTime));
+        String dateTime = DateFormat.format("dd-MM-yyyy hh:mm aa",cal).toString();
 
-        holder.txt_date_listpost.setText(pTime);
+        holder.txt_date_listpost.setText(dateTime);
 
         holder.txt_title_listpost.setText(pTitle);
 
@@ -158,37 +159,26 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
         }
 
-        holder.txt_more_listpost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.txt_more_listpost.setOnClickListener(v -> showMoreOptions(holder.txt_more_listpost, uid, myUid, pIDTime, pImage));
 
 
-                showMoreOptions(holder.txt_more_listpost, uid, myUid, pIDTime, pImage);
+        holder.txt_sumlike_listpost.setOnClickListener(v -> {
 
-            }
-        });
+            FragmentActivity activity = (FragmentActivity) (context);
+            FragmentManager fm = activity.getSupportFragmentManager();
 
+            PostLikedByDialog postLikedByDialog = new PostLikedByDialog();
+            postLikedByDialog.setCancelable(true);
 
-        holder.txt_sumlike_listpost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            Bundle bundle = new Bundle();
 
-                FragmentActivity activity = (FragmentActivity) (context);
-                FragmentManager fm = activity.getSupportFragmentManager();
+            bundle.putString("postID", pIDTime);
 
-                PostLikedByDialog postLikedByDialog = new PostLikedByDialog();
-                postLikedByDialog.setCancelable(true);
+            postLikedByDialog.setArguments(bundle);
 
-                Bundle bundle = new Bundle();
-
-                bundle.putString("postID", pIDTime);
-
-                postLikedByDialog.setArguments(bundle);
-
-                postLikedByDialog.show(fm, "DialogPostLikedBy");
+            postLikedByDialog.show(fm, "DialogPostLikedBy");
 
 
-            }
         });
 
         holder.txt_click_likepost.setOnClickListener(v -> {

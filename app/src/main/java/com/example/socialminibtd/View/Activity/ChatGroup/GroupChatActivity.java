@@ -157,10 +157,10 @@ public class GroupChatActivity extends AppCompatActivity implements IGroupChatAc
                     if (GroupID.equals(ds.child("groupId").getValue())) {
 
                         String groupTitle = String.valueOf(ds.child("groupTitle").getValue());
-                        String groupDescription = String.valueOf(ds.child("groupDescription").getValue());
+//                        String groupDescription = String.valueOf(ds.child("groupDescription").getValue());
                         String groupIcon = String.valueOf(ds.child("groupIcon").getValue());
-                        String timeStamp = String.valueOf(ds.child("timeStamp").getValue());
-                        String createBy = String.valueOf(ds.child("createBy").getValue());
+//                        String timeStamp = String.valueOf(ds.child("timeStamp").getValue());
+//                        String createBy = String.valueOf(ds.child("createBy").getValue());
 
                         Log.d("TestGroup", groupTitle);
 
@@ -294,55 +294,52 @@ public class GroupChatActivity extends AppCompatActivity implements IGroupChatAc
 
 
         reference.putFile(image_uri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                .addOnSuccessListener(taskSnapshot -> {
 
-                        Task<Uri> p_uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                    Task<Uri> p_uriTask = taskSnapshot.getStorage().getDownloadUrl();
 
-                        while (!p_uriTask.isSuccessful()) ;
+                    while (!p_uriTask.isSuccessful()) ;
 
-                        Uri p_downLoadUri = p_uriTask.getResult();
+                    Uri p_downLoadUri = p_uriTask.getResult();
 
-                        if (p_uriTask.isSuccessful()) {
+                    if (p_uriTask.isSuccessful()) {
 
-                            //put message data
-                            String timeStamp = "" + System.currentTimeMillis();
+                        //put message data
+                        String timeStamp1 = "" + System.currentTimeMillis();
 
-                            HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("sender", firebaseUser.getUid());
-                            hashMap.put("message", "" + p_downLoadUri);
-                            hashMap.put("timestamp", timeStamp);
-                            hashMap.put("type", "image");//text/image
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("sender", firebaseUser.getUid());
+                        hashMap.put("message", "" + p_downLoadUri);
+                        hashMap.put("timestamp", timeStamp1);
+                        hashMap.put("type", "image");//text/image
 
-                            DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("Groups");
-                            reference1.child(GroupID)
-                                    .child("Messages")
-                                    .child(timeStamp)
-                                    .setValue(hashMap)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
+                        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("Groups");
+                        reference1.child(GroupID)
+                                .child("Messages")
+                                .child(timeStamp1)
+                                .setValue(hashMap)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
 
-                                            Controller.dimissProgressDialog();
-                                            Toast.makeText(GroupChatActivity.this, "YESSSS", Toast.LENGTH_SHORT).show();
-                                            edt_enter_text_chatgroup.setText("");
+                                        Controller.dimissProgressDialog();
+                                        Toast.makeText(GroupChatActivity.this, "YESSSS", Toast.LENGTH_SHORT).show();
+                                        edt_enter_text_chatgroup.setText("");
 
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
 
-                                    Controller.appLogDebug(Const.LOG_DAT, e.toString());
-                                    Controller.dimissProgressDialog();
+                                Controller.appLogDebug(Const.LOG_DAT, e.toString());
+                                Controller.dimissProgressDialog();
 
-                                }
-                            });
+                            }
+                        });
 
-
-                        }
 
                     }
+
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -372,23 +369,17 @@ public class GroupChatActivity extends AppCompatActivity implements IGroupChatAc
                 .child("Messages")
                 .child(timeStamp)
                 .setValue(hashMap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+                .addOnSuccessListener(aVoid -> {
 
-                        Controller.dimissProgressDialog();
-                        edt_enter_text_chatgroup.setText("");
+                    Controller.dimissProgressDialog();
+                    edt_enter_text_chatgroup.setText("");
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                }).addOnFailureListener(e -> {
 
-                Controller.appLogDebug(Const.LOG_DAT, e.toString());
-                Controller.dimissProgressDialog();
+                    Controller.appLogDebug(Const.LOG_DAT, e.toString());
+                    Controller.dimissProgressDialog();
 
-            }
-        });
+                });
 
 
     }

@@ -11,14 +11,19 @@ import com.example.socialminibtd.View.Activity.Register.IRegisterActivityView;
 import com.example.socialminibtd.View.Activity.Register.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class SignUpPresenter implements ISignUpPresenter {
 
@@ -31,7 +36,7 @@ public class SignUpPresenter implements ISignUpPresenter {
     }
 
     @Override
-    public void onHandleSignNormal(String email, String pass, String name, String phone, String re_pass,String sex, FirebaseAuth auth) {
+    public void onHandleSignNormal(String email, String pass, String name, String phone, String re_pass, String sex, FirebaseAuth auth) {
 
         if (email.isEmpty()) {
 
@@ -62,7 +67,7 @@ public class SignUpPresenter implements ISignUpPresenter {
 
             Controller.showLongToast(registerActivity.getResources().getString(R.string.txt_pass_six_character), registerActivity);
 
-        }else if(sex.isEmpty()){
+        } else if (sex.isEmpty()) {
 
             Controller.showLongToast(registerActivity.getResources().getString(R.string.txt_check_gender), registerActivity);
 
@@ -73,7 +78,7 @@ public class SignUpPresenter implements ISignUpPresenter {
                 Controller.showSimpleProgressDialog(registerActivity
                         , registerActivity.getResources().getString(R.string.txt_loading), false);
 
-                SignUpWithEmailPass(email,name,phone, pass,sex, auth);
+                SignUpWithEmailPass(email, name, phone, pass, sex, auth);
 
             } else {
 
@@ -86,7 +91,7 @@ public class SignUpPresenter implements ISignUpPresenter {
     }
 
     @Override
-    public void onPutAuthToRealTimeDatabase(FirebaseUser user,String name,String phone,String gender) {
+    public void onPutAuthToRealTimeDatabase(FirebaseUser user, String name, String phone, String gender) {
 
         String user_email = user.getEmail();
         String user_uid = user.getUid();
@@ -112,55 +117,86 @@ public class SignUpPresenter implements ISignUpPresenter {
         //put data within database
         reference.child(user_uid).setValue(hashMap);
 
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                if (dataSnapshot.exists()) {
+
+                    onAddNodeFollow(user, name, phone, gender);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         Controller.appLogDebug(Const.LOG_DAT, "PutAuthToRealTimeDatabase  " + hashMap.toString());
+
+    }
+
+    @Override
+    public void onAddNodeFollow(FirebaseUser user, String name, String phone, String gende) {
+
+        Log.d(Const.LOG_DAT, "Check_follow_Vao day 1");
+
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("fId", timeStamp);
+        map.put("fUid", user.getUid());
+        map.put("fCountFl", "0");
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
+        databaseReference
+
+                .child(user.getUid())
+                .child("Follow")
+                .setValue(map)
+                .addOnSuccessListener(aVoid -> Log.d(Const.LOG_DAT, "Check_follow_Vao day 2"))
+                .addOnFailureListener(e -> Log.d(Const.LOG_DAT, "Check_follow_Vao day " + e.getMessage()));
 
     }
 
     private void SignUpWithEmailPass(String email, final String name, final String phone, String password, final String gender, final FirebaseAuth mAuth) {
 
         mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(registerActivity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                .addOnCompleteListener(registerActivity, task -> {
 
-                        if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 
-                            Log.d(Const.LOG_DAT, "createUserWithEmail:success");
+                        Controller.removeProgressDialog();
 
-                            Controller.removeProgressDialog();
+                        FirebaseUser user = mAuth.getCurrentUser();
 
-                            FirebaseUser user = mAuth.getCurrentUser();
+                        Log.d(Const.LOG_DAT, "createUserWithEmail:success  " + user.getEmail());
 
-                            Log.d(Const.LOG_DAT, "createUserWithEmail:success  " + user.getEmail());
+                        Controller.showLongToast(user.getEmail().toString(), registerActivity);
 
-                            Controller.showLongToast(user.getEmail().toString(), registerActivity);
+                        onPutAuthToRealTimeDatabase(user, name, phone, gender);
 
-                            onPutAuthToRealTimeDatabase(user,name,phone,gender);
+                        iRegisterActivityView.onIntentProfile();
 
-                            iRegisterActivityView.onIntentProfile();
+                    } else {
 
-                        } else {
+                        Controller.removeProgressDialog();
 
-                            Controller.removeProgressDialog();
-
-                            Controller.appLogDebug(Const.LOG_DAT, "createUserWithEmail:false  " + task.getException().toString());
-
-                        }
+                        Controller.appLogDebug(Const.LOG_DAT, "createUserWithEmail:false  " + task.getException().toString());
 
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-                Controller.removeProgressDialog();
+                }).addOnFailureListener(e -> {
 
-                Log.d(Const.LOG_DAT, "createUserWithEmail:false  " + e.toString());
+            Controller.removeProgressDialog();
 
-                Controller.showLongToast(e.getMessage().toString(), registerActivity);
+            Log.d(Const.LOG_DAT, "createUserWithEmail:false  " + e.toString());
 
-            }
+            Controller.showLongToast(e.getMessage().toString(), registerActivity);
+
         });
     }
 }
