@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,10 +52,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -74,6 +77,7 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
 
     private Uri image_uri;
+    private Uri uri_image_hadcrop;
 
     //permissions constants
     private static final int CAMERA_REQUEST_CODE = 101;
@@ -483,7 +487,6 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
         final String timeStamp = String.valueOf(System.currentTimeMillis());
         String filePathName = "Posts/" + "post_" + timeStamp;
 
-
         if (img_content_addpost.getDrawable() != null) {
 
             byte[] data = onImageToArrayByte();
@@ -522,48 +525,39 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
                     //path to store post data
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
                     // put data in this ref
-                    ref.child(timeStamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
+                    ref.child(timeStamp).setValue(hashMap).addOnSuccessListener(aVoid -> {
 
-                            Controller.dimissProgressDialog();
-                            Controller.showLongToast("Post published", AddPostActivity.this);
-                            onResetTextImage();
+                        Controller.dimissProgressDialog();
+                        Controller.showLongToast("Post published", AddPostActivity.this);
+                        onResetTextImage();
 
-                            onPrepareNotificaion("" + timeStamp
-                                    , "" + name + " added new post "
-                                    , "" + title + "\n" + description
-                                    , "PostNotification"
-                                    , "POST");
+                        onPrepareNotificaion("" + timeStamp
+                                , "" + name + " added new post "
+                                , "" + title + "\n" + description
+                                , "PostNotification"
+                                , "POST");
 
-                            onBackPressed();
-                            finish();
+                        onBackPressed();
+                        finish();
 
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+                    }).addOnFailureListener(e -> {
 
-                            Controller.dimissProgressDialog();
-                            Controller.showLongToast("Upload form post Failed" + e.toString(), AddPostActivity.this);
-                            Controller.appLogDebug(Const.LOG_DAT + " Upload form post Failed", "" + e.toString());
+                        Controller.dimissProgressDialog();
+                        Controller.showLongToast("Upload form post Failed" + e.toString(), AddPostActivity.this);
+                        Controller.appLogDebug(Const.LOG_DAT + " Upload form post Failed", "" + e.toString());
 
 
-                        }
                     });
 
 
                 }
 
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+            }).addOnFailureListener(e -> {
 
-                    Controller.dimissProgressDialog();
-                    Controller.showLongToast("Upload Image Failed" + e.toString(), AddPostActivity.this);
-                    Controller.appLogDebug(Const.LOG_DAT, "" + e.toString());
+                Controller.dimissProgressDialog();
+                Controller.showLongToast("Upload Image Failed" + e.toString(), AddPostActivity.this);
+                Controller.appLogDebug(Const.LOG_DAT, "" + e.toString());
 
-                }
             });
 
         } else {
@@ -587,35 +581,29 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
             //path to store post data
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
             // put data in this ref
-            ref.child(timeStamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
+            ref.child(timeStamp).setValue(hashMap).addOnSuccessListener(aVoid -> {
 
-                    Controller.dimissProgressDialog();
-                    Controller.showLongToast("Post published", AddPostActivity.this);
+                Controller.dimissProgressDialog();
+                Controller.showLongToast("Post published", AddPostActivity.this);
 
-                    onResetTextImage();
-                    onPrepareNotificaion("" + timeStamp
-                            , "" + name + " added new post "
-                            , "" + title + "\n" + description
-                            , "PostNotification"
-                            , "POST");
+                onResetTextImage();
+                onPrepareNotificaion("" + timeStamp
+                        , "" + name + " added new post "
+                        , "" + title + "\n" + description
+                        , "PostNotification"
+                        , "POST");
 
-                    onBackPressed();
-                    finish();
+                onBackPressed();
+                finish();
 
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+            }).addOnFailureListener(e -> {
 
-                    Controller.dimissProgressDialog();
-                    Controller.showLongToast("Upload form post Failed" + e.toString(), AddPostActivity.this);
-                    Controller.appLogDebug(Const.LOG_DAT + " Upload form post Failed", "" + e.toString());
+                Controller.dimissProgressDialog();
+                Controller.showLongToast("Upload form post Failed" + e.toString(), AddPostActivity.this);
+                Controller.appLogDebug(Const.LOG_DAT + " Upload form post Failed", "" + e.toString());
 
 
-                }
             });
 
 
@@ -661,103 +649,91 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
         StorageReference RefStorage = FirebaseStorage.getInstance().getReferenceFromUrl(editImage);
 
         RefStorage.delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+                .addOnSuccessListener(aVoid -> {
 
-                        //image deleted, upload new image
-                        //for post- image   name,post_id,publish_time
+                    //image deleted, upload new image
+                    //for post- image   name,post_id,publish_time
 
-                        Controller.appLogDebug(Const.LOG_DAT, " Deleted Image ");
+                    Controller.appLogDebug(Const.LOG_DAT, " Deleted Image ");
 
-                        final String timeStamp = String.valueOf(System.currentTimeMillis());
+                    final String timeStamp = String.valueOf(System.currentTimeMillis());
 
-                        String filePathandName = "Posts/" + "post_" + timeStamp;
+                    String filePathandName = "Posts/" + "post_" + timeStamp;
 
-                        byte[] data = onImageToArrayByte();
+                    byte[] data = onImageToArrayByte();
 
-                        final StorageReference Ref2 = FirebaseStorage.getInstance().getReference().child(filePathandName);
+                    final StorageReference Ref2 = FirebaseStorage.getInstance().getReference().child(filePathandName);
 
-                        Ref2.putBytes(data)
-                                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Ref2.putBytes(data)
+                            .addOnSuccessListener(taskSnapshot -> {
 
-                                        Controller.appLogDebug(Const.LOG_DAT, " Update new Image ");
+                                Controller.appLogDebug(Const.LOG_DAT, " Update new Image ");
 
-                                        //get url from image uploaded
+                                //get url from image uploaded
 
-                                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
 
-                                        while (!uriTask.isSuccessful()) ;
+                                while (!uriTask.isSuccessful()) ;
 
-                                        String downLoadUrl = uriTask.getResult().toString();
+                                String downLoadUrl = uriTask.getResult().toString();
 
-                                        Controller.appLogDebug(Const.LOG_DAT, " URL new Image :" + downLoadUrl);
+                                Controller.appLogDebug(Const.LOG_DAT, " URL new Image :" + downLoadUrl);
 
-                                        if (uriTask.isSuccessful() || !downLoadUrl.isEmpty()) {
+                                if (uriTask.isSuccessful() || !downLoadUrl.isEmpty()) {
 
-                                            //update to firebase database
-                                            HashMap<String, Object> hashMap = new HashMap<>();
-                                            hashMap.put("uid", uid);
-                                            hashMap.put("uName", name);
-                                            hashMap.put("uEmail", email);
-                                            hashMap.put("uDp", dp);
+                                    //update to firebase database
+                                    HashMap<String, Object> hashMap = new HashMap<>();
+                                    hashMap.put("uid", uid);
+                                    hashMap.put("uName", name);
+                                    hashMap.put("uEmail", email);
+                                    hashMap.put("uDp", dp);
 
-                                            hashMap.put("pTitle", title);
-                                            hashMap.put("pDescription", decription);
-                                            hashMap.put("pImage", downLoadUrl);
+                                    hashMap.put("pTitle", title);
+                                    hashMap.put("pDescription", decription);
+                                    hashMap.put("pImage", downLoadUrl);
 
 
-                                            Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : " + hashMap.toString());
+                                    Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : " + hashMap.toString());
 
-                                            DatabaseReference Refbase = FirebaseDatabase.getInstance().getReference("Posts");
+                                    DatabaseReference Refbase = FirebaseDatabase.getInstance().getReference("Posts");
 
-                                            Refbase.child(editPostId)
-                                                    .updateChildren(hashMap)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-
-                                                            Controller.dimissProgressDialog();
-                                                            Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : Success");
-                                                            Toast.makeText(AddPostActivity.this, "Updated Success", Toast.LENGTH_SHORT).show();
-
-
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
+                                    Refbase.child(editPostId)
+                                            .updateChildren(hashMap)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
-                                                public void onFailure(@NonNull Exception e) {
+                                                public void onSuccess(Void aVoid1) {
 
                                                     Controller.dimissProgressDialog();
-                                                    Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : fasle" + e.toString());
+                                                    Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : Success");
+                                                    Toast.makeText(AddPostActivity.this, "Updated Success", Toast.LENGTH_SHORT).show();
+
 
                                                 }
-                                            });
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                            Controller.dimissProgressDialog();
+                                            Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : fasle" + e.toString());
 
                                         }
+                                    });
 
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                                }
 
-                                Controller.dimissProgressDialog();
-                                Controller.appLogDebug(Const.LOG_DAT + "", "onUpdatePostWithImage : " + e.toString());
+                            }).addOnFailureListener(e -> {
 
-                            }
-                        });
+                        Controller.dimissProgressDialog();
+                        Controller.appLogDebug(Const.LOG_DAT + "", "onUpdatePostWithImage : " + e.toString());
+
+                    });
 
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                }).addOnFailureListener(e -> {
 
-                Controller.dimissProgressDialog();
-                Controller.appLogDebug(Const.LOG_DAT + "", "onUpdatePostWithImage : " + e.toString());
+            Controller.dimissProgressDialog();
+            Controller.appLogDebug(Const.LOG_DAT + "", "onUpdatePostWithImage : " + e.toString());
 
-            }
         });
 
     }
@@ -774,73 +750,61 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
         final StorageReference Ref2 = FirebaseStorage.getInstance().getReference().child(filePathandName);
 
         Ref2.putBytes(data)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                .addOnSuccessListener(taskSnapshot -> {
 
-                        Controller.appLogDebug(Const.LOG_DAT, " Update new Image ");
+                    Controller.appLogDebug(Const.LOG_DAT, " Update new Image ");
 
-                        //get url from image uploaded
+                    //get url from image uploaded
 
-                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
 
-                        while (!uriTask.isSuccessful()) ;
+                    while (!uriTask.isSuccessful()) ;
 
-                        String downLoadUrl = uriTask.getResult().toString();
+                    String downLoadUrl = uriTask.getResult().toString();
 
-                        Controller.appLogDebug(Const.LOG_DAT, " URL new Image :" + downLoadUrl);
+                    Controller.appLogDebug(Const.LOG_DAT, " URL new Image :" + downLoadUrl);
 
-                        if (uriTask.isSuccessful() || !downLoadUrl.isEmpty()) {
+                    if (uriTask.isSuccessful() || !downLoadUrl.isEmpty()) {
 
-                            //update to firebase database
-                            HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("uid", uid);
-                            hashMap.put("uName", name);
-                            hashMap.put("uEmail", email);
-                            hashMap.put("uDp", dp);
+                        //update to firebase database
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("uid", uid);
+                        hashMap.put("uName", name);
+                        hashMap.put("uEmail", email);
+                        hashMap.put("uDp", dp);
 
-                            hashMap.put("pTitle", title);
-                            hashMap.put("pDescription", decription);
-                            hashMap.put("pImage", downLoadUrl);
+                        hashMap.put("pTitle", title);
+                        hashMap.put("pDescription", decription);
+                        hashMap.put("pImage", downLoadUrl);
 
 
-                            Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : " + hashMap.toString());
+                        Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : " + hashMap.toString());
 
-                            DatabaseReference Refbase = FirebaseDatabase.getInstance().getReference("Posts");
+                        DatabaseReference Refbase = FirebaseDatabase.getInstance().getReference("Posts");
 
-                            Refbase.child(editPostId)
-                                    .updateChildren(hashMap)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-
-                                            Controller.dimissProgressDialog();
-                                            Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : Success");
-                                            Toast.makeText(AddPostActivity.this, "Updated Success", Toast.LENGTH_SHORT).show();
-
-
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
+                        Refbase.child(editPostId)
+                                .updateChildren(hashMap)
+                                .addOnSuccessListener(aVoid -> {
 
                                     Controller.dimissProgressDialog();
-                                    Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : fasle" + e.toString());
+                                    Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : Success");
+                                    Toast.makeText(AddPostActivity.this, "Updated Success", Toast.LENGTH_SHORT).show();
 
-                                }
-                            });
 
-                        }
+                                }).addOnFailureListener(e -> {
+
+                            Controller.dimissProgressDialog();
+                            Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : fasle" + e.toString());
+
+                        });
 
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-                Controller.dimissProgressDialog();
-                Controller.appLogDebug(Const.LOG_DAT + "", "onUpdatePostWithImage : " + e.toString());
+                }).addOnFailureListener(e -> {
 
-            }
+            Controller.dimissProgressDialog();
+            Controller.appLogDebug(Const.LOG_DAT + "", "onUpdatePostWithImage : " + e.toString());
+
         });
 
 
@@ -868,24 +832,18 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
         Refbase.child(editPostId)
                 .updateChildren(hashMap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+                .addOnSuccessListener(aVoid -> {
 
-                        Controller.dimissProgressDialog();
-                        Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : Success");
-                        Toast.makeText(AddPostActivity.this, "Updated Success", Toast.LENGTH_SHORT).show();
+                    Controller.dimissProgressDialog();
+                    Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : Success");
+                    Toast.makeText(AddPostActivity.this, "Updated Success", Toast.LENGTH_SHORT).show();
 
 
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                }).addOnFailureListener(e -> {
 
-                Controller.dimissProgressDialog();
-                Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : fasle" + e.toString());
+            Controller.dimissProgressDialog();
+            Controller.appLogDebug(Const.LOG_DAT + "", " Update to firebase : fasle" + e.toString());
 
-            }
         });
 
     }
@@ -905,20 +863,23 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
         edt_title_addpost.setText(null);
         edt_description_addpost.setText(null);
-        image_uri = null;
+        uri_image_hadcrop = null;
         img_content_addpost.setVisibility(View.GONE);
 
     }
+
 
     @Override
     public byte[] onImageToArrayByte() {
 
         //get image from imageview
         Bitmap bitmap = ((BitmapDrawable) img_content_addpost.getDrawable()).getBitmap();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+/*        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // image compress
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
-        byte[] data = bos.toByteArray();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);*/
+
+        byte[] data = Controller.OncompressImage(bitmap).toByteArray();
 
         return data;
     }
@@ -1050,6 +1011,31 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
+        // Crop image
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+            if (resultCode == RESULT_OK) {
+
+                uri_image_hadcrop = result.getUri();
+
+                if (uri_image_hadcrop != null) {
+
+                    img_content_addpost.setVisibility(View.VISIBLE);
+                    img_content_addpost.setImageURI(uri_image_hadcrop);
+
+                }
+                // upload image to server
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
+                Exception error = result.getError();
+
+                Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+
         if (resultCode == RESULT_OK) {
 
             if (requestCode == IMAGE_PICK_GALLERY_REQUEST_CODE) {
@@ -1060,10 +1046,9 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
                 if (image_uri != null) {
 
-                    img_content_addpost.setVisibility(View.VISIBLE);
-                    img_content_addpost.setImageURI(image_uri);
+                    CropImage.activity(image_uri)
+                            .start(this);
 
-                    //     onUploadConverPhotoProfile(image_uri);
 
                 }
 
@@ -1073,10 +1058,9 @@ public class AddPostActivity extends AppCompatActivity implements IAddPostActivi
 
                 Controller.appLogDebug("PICK_IMAGE", image_uri.toString());
 
-                img_content_addpost.setVisibility(View.VISIBLE);
-                img_content_addpost.setImageURI(image_uri);
+                CropImage.activity(image_uri)
+                        .start(this);
 
-                //     onUploadConverPhotoProfile(image_uri);
 
             }
 

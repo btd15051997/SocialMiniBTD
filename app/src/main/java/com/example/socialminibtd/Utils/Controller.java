@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
 import android.text.format.DateFormat;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.socialminibtd.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Locale;
@@ -36,6 +38,25 @@ public class Controller {
         progressDialog.setMessage(message);
         progressDialog.show();
 
+    }
+
+    public static ByteArrayOutputStream OncompressImage(Bitmap image) {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//Compression quality, here 100 means no compression, the storage of compressed data to baos
+
+        int options = 90;
+
+        while (baos.toByteArray().length / 1024 > 400) {  //Loop if compressed picture is greater than 400kb, than to compression
+            baos.reset();//Reset baos is empty baos
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//The compression options%, storing the compressed data to the baos
+            options -= 10;//Every time reduced by 10
+        }
+
+/*        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//The storage of compressed data in the baos to ByteArrayInputStream
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//The ByteArrayInputStream data generation*/
+
+        return baos;
     }
 
     public static  Animation onShowAnimationBlink(Context context){

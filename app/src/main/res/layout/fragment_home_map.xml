@@ -33,7 +33,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_marginRight="@dimen/_5sdp"
-                    android:layout_toLeftOf="@+id/img_user_sortmenu"
+                    android:layout_toLeftOf="@+id/txt_voice_search"
                     android:layout_toRightOf="@+id/relative_header_home"
                     android:background="@drawable/edt_custom_signin_up"
                     android:drawableLeft="@drawable/ic_search"
@@ -42,6 +42,7 @@
                     android:imeOptions="actionSearch"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true" />
+
 
 
                 <RelativeLayout
@@ -80,6 +81,14 @@
                     android:layout_centerVertical="true"
                     android:scaleX="-1"
                     android:src="@drawable/ic_sort_menu" />
+
+                <TextView
+                    android:id="@+id/txt_voice_search"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/img_user_sortmenu"
+                    android:background="@drawable/ic_keyboard_voice"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"/>
 
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>

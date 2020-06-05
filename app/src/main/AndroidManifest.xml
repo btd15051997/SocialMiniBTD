@@ -42,6 +42,8 @@
         <activity android:name=".View.Activity.PostDetail.PostDetailActivity" />
         <activity android:name=".View.Activity.AddPost.AddPostActivity" />
         <activity android:name=".View.Activity.ChatUser.ChatActivity" />
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
         <activity
             android:name=".View.Activity.Dashbroad.DashboardActivity"
             android:screenOrientation="portrait" />

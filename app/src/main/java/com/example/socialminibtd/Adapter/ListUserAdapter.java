@@ -364,7 +364,9 @@ public class ListUserAdapter extends RecyclerSwipeAdapter<ListUserAdapter.ViewHo
         hashMap.put("uid", hisUid);
 
         DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("User");
+
         Ref.child(myUid).child("BlockedUSers").child(hisUid).setValue(hashMap)
+
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

@@ -1,14 +1,17 @@
 package com.example.socialminibtd.View.Fragment.HomFragment;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -50,6 +53,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
@@ -57,6 +61,8 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+
+import static android.app.Activity.RESULT_OK;
 
 public class HomeFragment extends Fragment implements IHomeFragmentView, View.OnClickListener {
 
@@ -69,7 +75,7 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
     private DashboardActivity mDashboardActivity;
     private FirebaseAuth firebaseAuth;
     private EditText edt_search_listpost;
-    private TextView txt_notification_home, txt_sumnotification_home;
+    private TextView txt_notification_home, txt_sumnotification_home, txt_voice_search;
     private LinearLayout linear_addpost_home;
     private CircularImageView img_current_avt_home;
 
@@ -137,7 +143,7 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
                             postAdapter = new ListPostAdapter(arrayList_home, mDashboardActivity);
                             postAdapter.notifyDataSetChanged();
-                            Log.d(Const.LOG_DAT, "Observable_onNext: "+arrayList_home);
+                            Log.d(Const.LOG_DAT, "Observable_onNext: " + arrayList_home);
 
                         }
 
@@ -177,6 +183,8 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
         recyclerView_Home = mView.findViewById(R.id.recyc_list_post_home);
 
+        txt_voice_search = mView.findViewById(R.id.txt_voice_search);
+
         edt_search_listpost = mView.findViewById(R.id.edt_search_listpost);
 
         txt_notification_home = mView.findViewById(R.id.txt_notification_home);
@@ -196,6 +204,7 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
         img_user_sortmenu.setOnClickListener(this);
         txt_notification_home.setOnClickListener(this);
         linear_addpost_home.setOnClickListener(this);
+        txt_voice_search.setOnClickListener(this);
 
         edt_search_listpost.addTextChangedListener(new TextWatcher() {
             @Override
@@ -223,6 +232,10 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
     public void onCustomRecyclerView() {
 
         recyclerView_Home.setHasFixedSize(true);
+
+        recyclerView_Home.setItemViewCacheSize(20);
+        recyclerView_Home.setDrawingCacheEnabled(true);
+        recyclerView_Home.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mDashboardActivity
                 , LinearLayoutManager.VERTICAL, true);
@@ -257,7 +270,7 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
                     arrayList_home.add(listPost);
 
-              //      postAdapter = new ListPostAdapter(arrayList_home, mDashboardActivity);
+                    //      postAdapter = new ListPostAdapter(arrayList_home, mDashboardActivity);
 
                 }
 
@@ -506,6 +519,29 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+
+            case 1:
+
+                if (resultCode == RESULT_OK && data != null){
+
+                    ArrayList<String> stringArrayList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+                    Log.d("Voice_search",stringArrayList.size()+"  ");
+
+                    edt_search_listpost.setText(stringArrayList.get(0));
+
+                }
+
+                break;
+
+        }
+    }
+
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -530,6 +566,12 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
                 break;
 
+            case R.id.txt_voice_search:
+
+                onVoiceSearch();
+
+                break;
+
             case R.id.linear_addpost_home:
 
                 mDashboardActivity.onIntentAddPost();
@@ -540,6 +582,26 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
 
                 break;
+
+        }
+
+    }
+
+    private void onVoiceSearch() {
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hi Speak Something");
+
+        try {
+
+            startActivityForResult(intent,1);
+
+        }catch (ActivityNotFoundException e){
+
+            Toast.makeText(mDashboardActivity, ""+e.getMessage().toString(), Toast.LENGTH_SHORT).show();
 
         }
 

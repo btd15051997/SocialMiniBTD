@@ -53,7 +53,6 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         img_male_female.setAnimation(Controller.onShowAnimationBlink(getApplicationContext()));
         img_register_header.setAnimation(Controller.onShowAnimationBounce(getApplicationContext()));
 
-
     }
 
     @Override

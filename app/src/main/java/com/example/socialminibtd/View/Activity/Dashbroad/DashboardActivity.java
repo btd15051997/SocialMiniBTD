@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.HashMap;
+
 public class DashboardActivity extends AppCompatActivity implements IDashboardActivityView
         , View.OnClickListener
         , BottomNavigationView.OnNavigationItemSelectedListener
@@ -110,6 +112,31 @@ public class DashboardActivity extends AppCompatActivity implements IDashboardAc
     }
 
     @Override
+    public void onCheckOnlineStatus(String status) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("User").child(myUid);
+
+        HashMap<String, Object> hashMapStatus = new HashMap<>();
+        hashMapStatus.put(Const.Params.ONLINE_STATUS, status);
+
+        Controller.appLogDebug(Const.LOG_DAT, "CheckOnlineStatus :" + hashMapStatus.toString());
+
+        //update status online offline
+        reference.updateChildren(hashMapStatus);
+
+    }
+
+
+    @Override
+    protected void onStop() {
+
+        onCheckOnlineStatus(String.valueOf(System.currentTimeMillis()));
+
+        super.onStop();
+
+    }
+
+    @Override
     public void onAddFragment(Fragment fragment, boolean addToBackStack, boolean TransactionAdd, String Tag, boolean isAnimate) {
 
         FragmentManager manager = getSupportFragmentManager();
@@ -174,6 +201,8 @@ public class DashboardActivity extends AppCompatActivity implements IDashboardAc
     protected void onStart() {
 
         onCheckUserCurrent();
+
+        onCheckOnlineStatus(Const.Params.ONLINE);
 
         super.onStart();
     }

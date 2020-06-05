@@ -23,7 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 card_view:cardBackgroundColor="@color/white"
-                card_view:cardElevation="@dimen/_3sdp"
+                card_view:cardElevation="@dimen/_5sdp"
+                card_view:cardCornerRadius="@dimen/_5sdp"
                 card_view:cardUseCompatPadding="true">
 
                 <LinearLayout
@@ -106,8 +107,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_140sdp"
                         android:layout_margin="@dimen/_3sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
                         android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginRight="@dimen/_5sdp"
                         android:visibility="visible" />
 
                     <RelativeLayout
@@ -121,9 +122,9 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_marginLeft="@dimen/_3sdp"
-                            android:text="123llike"
-                            android:textSize="@dimen/_13ssp"
-                            android:textColor="@color/color_background_main" />
+                            android:text="Like"
+                            android:textColor="@color/color_background_main"
+                            android:textSize="@dimen/_13ssp" />
 
                         <TextView
                             android:id="@+id/tv_sum_comment_postdetail"
@@ -131,9 +132,9 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_marginLeft="@dimen/_3sdp"
-                            android:textSize="@dimen/_13ssp"
-                            android:text="1 Comment"
-                            android:textColor="@color/color_background_main" />
+                            android:text="Comment"
+                            android:textColor="@color/color_background_main"
+                            android:textSize="@dimen/_13ssp" />
 
                     </RelativeLayout>
 
@@ -143,6 +144,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:orientation="horizontal"
+                        android:layout_margin="@dimen/_5sdp"
                         android:weightSum="2">
 
                         <TextView
@@ -150,6 +152,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_weight="1"
                             android:background="@drawable/custom_like_comment"
                             android:drawableLeft="@drawable/ic_favorite"
@@ -158,7 +161,6 @@
                             android:gravity="center_horizontal"
                             android:padding="@dimen/_5sdp"
                             android:text="Like"
-                            android:layout_marginRight="@dimen/_5sdp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_12ssp" />
 
@@ -168,8 +170,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
                             android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_weight="1"
                             android:background="@drawable/custom_like_comment"
                             android:drawableLeft="@drawable/ic_share"
                             android:drawablePadding="@dimen/_3sdp"
@@ -201,9 +203,9 @@
                 android:id="@+id/recyc_post_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:listitem="@layout/item_list_comment"
                 android:layout_above="@+id/cardv_bottom_postdetail"
-                android:layout_below="@+id/cardv_postdetail" />
+                android:layout_below="@+id/cardv_postdetail"
+                tools:listitem="@layout/item_list_comment" />
         </LinearLayout>
 
 
@@ -216,6 +218,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         card_view:cardBackgroundColor="@color/white"
+        card_view:cardCornerRadius="@dimen/_10sdp"
         card_view:cardElevation="@dimen/_3sdp"
         card_view:cardUseCompatPadding="true">
 

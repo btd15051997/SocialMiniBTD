@@ -19,14 +19,11 @@ public class WellcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wellcome);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        new Handler().postDelayed(() -> {
 
-                startActivity(new Intent(WellcomeActivity.this, LanguageActivity.class));
-                finish();
+            startActivity(new Intent(WellcomeActivity.this, LanguageActivity.class));
+            finish();
 
-            }
         },TIME_PLASH_WELLCOME);
     }
 }

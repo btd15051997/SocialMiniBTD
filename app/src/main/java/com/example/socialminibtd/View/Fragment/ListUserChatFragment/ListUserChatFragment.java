@@ -1,20 +1,17 @@
 package com.example.socialminibtd.View.Fragment.ListUserChatFragment;
-
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.socialminibtd.Adapter.ListChatAdapter;
+import com.example.socialminibtd.Adapter.ListsUserHorizotalAdapter;
 import com.example.socialminibtd.Model.ChatList;
 import com.example.socialminibtd.Model.ListUser;
 import com.example.socialminibtd.Model.ModelChat;
@@ -41,10 +38,14 @@ public class ListUserChatFragment extends Fragment implements IListUserChatView 
 
     private ArrayList<ListUser> userList;
     private ArrayList<ChatList> chatListlist;
+    private ArrayList<ListUser> userHorizotals;
+
     private ListChatAdapter adapter;
+    private ListsUserHorizotalAdapter horizotalAdapter;
 
     private DatabaseReference Reference;
     private FirebaseUser mCurrentUser;
+    private RecyclerView recyc_user_horizotal;
 
     private DashboardActivity dashboardActivity;
 
@@ -71,12 +72,19 @@ public class ListUserChatFragment extends Fragment implements IListUserChatView 
 
     @Override
     public void onMappingView() {
+
         recyc_listuser_chat = view.findViewById(R.id.recyc_listuser_chat);
+        recyc_user_horizotal = view.findViewById(R.id.recyc_user_horizotal);
+
+        chatListlist = new ArrayList<>();
+        userList = new ArrayList<>();
+
+
+        onSetRecyclerHorizotal();
+
         mAuth = FirebaseAuth.getInstance();
 
         mCurrentUser = mAuth.getCurrentUser();
-
-        chatListlist = new ArrayList<>();
 
         Reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(mCurrentUser.getUid());
 
@@ -108,10 +116,58 @@ public class ListUserChatFragment extends Fragment implements IListUserChatView 
 
     }
 
+    private void onSetRecyclerHorizotal() {
+
+        userHorizotals = new ArrayList<>();
+
+        recyc_user_horizotal.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(dashboardActivity, RecyclerView.HORIZONTAL, false);
+
+        recyc_user_horizotal.setLayoutManager(layoutManager);
+
+        Reference = FirebaseDatabase.getInstance().getReference("User");
+
+        Reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (userHorizotals != null) {
+
+                    userHorizotals.clear();
+                }
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    ListUser listUser = ds.getValue(ListUser.class);
+
+                    if (mAuth.getUid().equals(listUser.getUid())) {
+
+                        continue;
+                    }
+
+                    userHorizotals.add(listUser);
+
+                }
+
+                horizotalAdapter = new ListsUserHorizotalAdapter(dashboardActivity, userHorizotals);
+
+                recyc_user_horizotal.setAdapter(horizotalAdapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
     @Override
     public void onLoadsChat() {
 
-        userList = new ArrayList<>();
         Reference = FirebaseDatabase.getInstance().getReference("User");
         Reference.addValueEventListener(new ValueEventListener() {
             @Override

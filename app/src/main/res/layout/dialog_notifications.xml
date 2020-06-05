@@ -37,13 +37,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_list_notification" />
 
-    <TextView
-        android:id="@+id/txt_not_available_notification"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/_14ssp"
-        android:textColor="@color/black_two"
-        android:text="Notification not available!"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+
 
 </RelativeLayout>

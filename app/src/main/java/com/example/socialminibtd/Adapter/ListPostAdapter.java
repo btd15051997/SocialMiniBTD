@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -35,6 +37,7 @@ import com.example.socialminibtd.Utils.Controller;
 import com.example.socialminibtd.View.Activity.AddPost.AddPostActivity;
 import com.example.socialminibtd.View.Activity.PostDetail.PostDetailActivity;
 import com.example.socialminibtd.View.Dialog.PostLikedBy.PostLikedByDialog;
+import com.example.socialminibtd.View.Dialog.ShowImagePost.ShowImageOfPost;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,8 +48,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,7 +95,6 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
-
         final String uid = arrayList.get(position).getUid();
         String uDp = arrayList.get(position).getuDp();
         String uEmail = arrayList.get(position).getuEmail();
@@ -107,15 +113,16 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
         holder.txt_name_listpost.setText(uName);
 
 
-        Calendar cal =Calendar.getInstance(Locale.ENGLISH);
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(Long.parseLong(pTime));
-        String dateTime = DateFormat.format("dd-MM-yyyy hh:mm aa",cal).toString();
+        String dateTime = DateFormat.format("dd-MM-yyyy hh:mm aa", cal).toString();
 
         holder.txt_date_listpost.setText(dateTime);
 
         holder.txt_title_listpost.setText(pTitle);
 
         holder.txt_sumlike_listpost.setText(pLike + " Likes");
+
         holder.tv_sumcomment_post.setText(pComment + " Comments");
 
         // set likes for each post
@@ -124,12 +131,29 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
         try {
 
-            Picasso.get().load(uDp).placeholder(R.drawable.icon_logoapp).into(holder.img_account_listpost);
+            Picasso.get().load(uDp).placeholder(R.drawable.icon_logoapp).into(new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+                    holder.img_account_listpost.setImageBitmap(bitmap);
+
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            });
             Controller.appLogDebug(Const.LOG_DAT, uDp.toString());
 
         } catch (Exception e) {
 
-           holder.img_account_listpost.setImageResource(R.drawable.icon_logoapp);
+            holder.img_account_listpost.setImageResource(R.drawable.icon_logoapp);
 
         }
 
@@ -159,8 +183,25 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
         }
 
-        holder.txt_more_listpost.setOnClickListener(v -> showMoreOptions(holder.txt_more_listpost, uid, myUid, pIDTime, pImage));
+        holder.img_content_listpost.setOnClickListener(v -> {
 
+            FragmentActivity activity = (FragmentActivity) (context);
+            FragmentManager fm = activity.getSupportFragmentManager();
+
+            ShowImageOfPost showImageOfPost = new ShowImageOfPost();
+            showImageOfPost.setCancelable(true);
+
+            Bundle bundle = new Bundle();
+
+            bundle.putString("postID", pIDTime);
+
+            showImageOfPost.setArguments(bundle);
+
+            showImageOfPost.show(fm, "ShowImageOfPost");
+
+        });
+
+        holder.txt_more_listpost.setOnClickListener(v -> showMoreOptions(holder.txt_more_listpost, uid, myUid, pIDTime, pImage));
 
         holder.txt_sumlike_listpost.setOnClickListener(v -> {
 
@@ -183,6 +224,8 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
         holder.txt_click_likepost.setOnClickListener(v -> {
 
+            onRefreshItemView(position, arrayList.get(position));
+
             final int pLikes = Integer.parseInt(arrayList.get(position).getpLikes());
 
             mProgressLike = true;
@@ -195,6 +238,7 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     if (mProgressLike) {
+
 
                         if (dataSnapshot.child(postId).hasChild(myUid)) {
                             //already like post, so remove like
@@ -209,6 +253,7 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
                             postsRef.child(postId).child("pLikes").setValue("" + (pLikes + 1));
 
                             likesRef.child(postId).child(myUid).setValue("Liked"); // set any value
+
 
                             mProgressLike = false;
 
@@ -230,7 +275,6 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
         });
 
         holder.txt_comment_post.setOnClickListener(v -> onStartPostDetail(pIDTime));
-
 
         holder.txt_share_post.setOnClickListener(v -> {
 
@@ -257,6 +301,14 @@ public class ListPostAdapter extends RecyclerView.Adapter<ListPostAdapter.ViewHo
 
         });
     }
+
+    private void onRefreshItemView(int position, ListPost listPost) {
+
+        arrayList.set(position, listPost);
+        notifyItemChanged(position);
+
+    }
+
 
     private void onShareTextAndImage(String pTitle, String pDescription, Bitmap bitmap) {
 

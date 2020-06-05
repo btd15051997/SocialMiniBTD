@@ -10,16 +10,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -60,6 +63,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,11 +78,12 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity implements IChatActivityView, View.OnClickListener {
 
+    private static final int REQUEST_CALL = 1;
     private ImageView img_send_text_chat, img_attachfile_chat;
     private CircularImageView img_user_chatting;
     private EditText edt_enter_text_chat;
     private RecyclerView recyc_content_chat;
-    private TextView txt_name_chatting, txt_status_chatting;
+    private TextView txt_name_chatting, txt_status_chatting, txt_call_phone;
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;
     private FirebaseDatabase database;
@@ -87,7 +92,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
     private String hisUid;
     private String myUid;
     private String hisImage;
-
+    private String phoneNumber;
     //permissions constants
     private static final int CAMERA_REQUEST_CODE = 101;
     private static final int STORAGE_REQUEST_CODE = 102;
@@ -148,6 +153,12 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
         switch (v.getId()) {
 
+            case R.id.txt_call_phone:
+
+                onMakeCallPhone();
+
+                break;
+
             case R.id.img_send_text_chat:
 
                 notify = true;
@@ -175,6 +186,25 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
     }
 
+    private void onMakeCallPhone() {
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
+
+            Log.d("Check", "Check 1");
+
+        } else {
+
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.fromParts("tel", phoneNumber, null));
+            startActivity(callIntent);
+
+        }
+
+
+    }
+
     @Override
     public void onMappingView() {
 
@@ -185,6 +215,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         txt_name_chatting = findViewById(R.id.txt_name_chatting);
         txt_status_chatting = findViewById(R.id.txt_status_chatting);
         img_attachfile_chat = findViewById(R.id.img_attachfile_chat);
+        txt_call_phone = findViewById(R.id.txt_call_phone);
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
@@ -194,6 +225,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
         img_send_text_chat.setOnClickListener(this);
         img_attachfile_chat.setOnClickListener(this);
+        txt_call_phone.setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
@@ -248,6 +280,9 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
                     String name = String.valueOf(dataSnapshot1.child("name").getValue());
                     hisImage = String.valueOf(dataSnapshot1.child("image").getValue());
+                    phoneNumber = String.valueOf(dataSnapshot1.child("phone").getValue());
+
+                    Log.d("Check", phoneNumber);
                     //get status
                     String onlineStatus = "" + dataSnapshot1.child(Const.Params.ONLINE_STATUS).getValue();
                     String TypingTo = "" + dataSnapshot1.child(Const.Params.TYPING_TO).getValue();
@@ -405,114 +440,111 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
             StorageReference ref = FirebaseStorage.getInstance().getReference().child(fileNameAndPath);
             ref.putBytes(data)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    .addOnSuccessListener(taskSnapshot -> {
 
-                            //image uploaded
+                        //image uploaded
 
-                            //get url image
-                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                        //get url image
+                        Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
 
-                            while (!uriTask.isSuccessful()) ;
+                        while (!uriTask.isSuccessful()) ;
 
-                            String downloadUri = uriTask.getResult().toString();
+                        String downloadUri = uriTask.getResult().toString();
 
-                            if (uriTask.isSuccessful()) {
-                                //add image and other info to database
+                        if (uriTask.isSuccessful()) {
+                            //add image and other info to database
 
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-                                //set up required data
-                                HashMap<String, Object> hashMap = new HashMap<>();
+                            //set up required data
+                            HashMap<String, Object> hashMap = new HashMap<>();
 
-                                hashMap.put("sender", myUid);
-                                hashMap.put("receiver", hisUid);
-                                hashMap.put("message", downloadUri);
-                                hashMap.put("timestamp", timeStamp);
-                                hashMap.put("type", "image");
-                                hashMap.put("isseen", false);
+                            hashMap.put("sender", myUid);
+                            hashMap.put("receiver", hisUid);
+                            hashMap.put("message", downloadUri);
+                            hashMap.put("timestamp", timeStamp);
+                            hashMap.put("type", "image");
+                            hashMap.put("isseen", false);
 
-                                //put data to firebase
+                            //put data to firebase
 
-                                databaseReference.child("Chats").push().setValue(hashMap);
+                            databaseReference.child("Chats").push().setValue(hashMap);
 
-                                //send notification
-                                DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("User").child(myUid);
-                                databaseReference1.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            //send notification
+                            DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("User").child(myUid);
+                            databaseReference1.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                        ListUser user = dataSnapshot.getValue(ListUser.class);
-                                        Controller.dimissProgressDialog();
+                                    ListUser user = dataSnapshot.getValue(ListUser.class);
+                                    Controller.dimissProgressDialog();
 
-                                        if (notify) {
+                                    if (notify) {
 
-                                            sendNotification(hisUid, user.getName(), "Send you a photo");
-
-                                        }
-
-                                        notify = false;
+                                        sendNotification(hisUid, user.getName(), "Send you a photo");
 
                                     }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    notify = false;
 
-                                        Controller.dimissProgressDialog();
-                                        Controller.appLogDebug(Const.LOG_DAT, "send image to chat :" + databaseError.getMessage());
+                                }
 
-                                    }
-                                });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                //create node chatlist on database
-                                final DatabaseReference Chatreference1 = FirebaseDatabase.getInstance().getReference("Chatlist")
-                                        .child(myUid)
-                                        .child(hisUid);
-                                Chatreference1.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Controller.dimissProgressDialog();
+                                    Controller.appLogDebug(Const.LOG_DAT, "send image to chat :" + databaseError.getMessage());
 
-                                        if (!dataSnapshot.exists()) {
+                                }
+                            });
 
-                                            Chatreference1.child("id").setValue(hisUid);
+                            //create node chatlist on database
+                            final DatabaseReference Chatreference1 = FirebaseDatabase.getInstance().getReference("Chatlist")
+                                    .child(myUid)
+                                    .child(hisUid);
+                            Chatreference1.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                        }
+                                    if (!dataSnapshot.exists()) {
 
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-
-
-                                final DatabaseReference Chatreference2 = FirebaseDatabase.getInstance().getReference("Chatlist")
-                                        .child(hisUid)
-                                        .child(myUid);
-                                Chatreference2.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                        if (!dataSnapshot.exists()) {
-
-                                            Chatreference2.child("id").setValue(myUid);
-
-                                        }
+                                        Chatreference1.child("id").setValue(hisUid);
 
                                     }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+                            final DatabaseReference Chatreference2 = FirebaseDatabase.getInstance().getReference("Chatlist")
+                                    .child(hisUid)
+                                    .child(myUid);
+                            Chatreference2.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                    if (!dataSnapshot.exists()) {
+
+                                        Chatreference2.child("id").setValue(myUid);
 
                                     }
-                                });
 
-                            }
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 
                         }
+
+
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
@@ -742,6 +774,20 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
         switch (requestCode) {
 
+            case REQUEST_CALL:
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    onMakeCallPhone();
+
+                } else {
+
+                    Toast.makeText(this, "Cannot call!", Toast.LENGTH_SHORT).show();
+
+                }
+
+                break;
+
             case CAMERA_REQUEST_CODE: {
 
                 // picking from camera
@@ -798,6 +844,26 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
+        // Crop image
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+            if (resultCode == RESULT_OK) {
+
+                Uri uri_crop = result.getUri();
+
+                // upload image to server
+                onSendImageMessage(uri_crop);
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
+                Exception error = result.getError();
+
+                Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+
         if (resultCode == RESULT_OK) {
 
             if (requestCode == IMAGE_PICK_GALLERY_REQUEST_CODE) {
@@ -806,9 +872,12 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
                 Controller.appLogDebug(Const.LOG_DAT, "PICK_IMAGE_CHAT " + image_uri.toString());
 
+                // performCrop(image_uri);
+
                 if (image_uri != null) {
 
-                    onSendImageMessage(image_uri);
+                    CropImage.activity(image_uri)
+                            .start(this);
 
                 }
 
@@ -818,7 +887,12 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
                 Controller.appLogDebug(Const.LOG_DAT, "PICK_IMAGE_CHAT " + image_uri.toString());
 
-                onSendImageMessage(image_uri);
+                if (image_uri != null) {
+
+                    CropImage.activity(image_uri)
+                            .start(this);
+
+                }
 
             }
 
@@ -858,7 +932,6 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
     }
 
 
-
     @Override
     public void sendNotification(final String hisUid, final String nameSender, final String message) {
 
@@ -896,23 +969,18 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
                                 Controller.appLogDebug(Const.LOG_DAT, " getDataMessage : " + response.toString());
 
                             }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                                Controller.appLogDebug(Const.LOG_DAT, " VolleyError : " + error.toString());
-
-                            }
-                        }) {
+                        }, error ->
+                                Controller.appLogDebug(Const.LOG_DAT, " VolleyError : " + error.toString())) {
 
                             @Override
-                            public Map<String, String> getHeaders() throws AuthFailureError {
+                            public Map<String, String> getHeaders() {
                                 // put params
                                 HashMap<String, String> header = new HashMap<>();
 
                                 //volley exxist content_type
                                 //  header.put("Content-Type", "application/json");
-                                header.put("Authorization", "key=AAAAls0H_M0:APA91bHQOVAR0jvzuQusEg4KV7tm8xc5v45SD_nh50pLqn3LLJMajLa9AUw4vM4MOrn--nF8qO7HEKODbAVMnZbucDVRGi-UlRgRg0DB_Z24yKYGW2q1P72nt_ic2BHswpPn3_lPdmYD");
+                                header.put("Authorization"
+                                        , "key=AAAAls0H_M0:APA91bHQOVAR0jvzuQusEg4KV7tm8xc5v45SD_nh50pLqn3LLJMajLa9AUw4vM4MOrn--nF8qO7HEKODbAVMnZbucDVRGi-UlRgRg0DB_Z24yKYGW2q1P72nt_ic2BHswpPn3_lPdmYD");
 
                                 return header;
                             }
@@ -951,6 +1019,33 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         });
 
     }
+
+//    private void performCrop(Uri picUri) {
+//        try {
+//            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+//            // indicate image type and Uri
+//            cropIntent.setDataAndType(picUri, "image/*");
+//            // set crop properties here
+//            cropIntent.putExtra("crop", true);
+//            // indicate aspect of desired crop
+//            cropIntent.putExtra("aspectX", 1);
+//            cropIntent.putExtra("aspectY", 1);
+//            // indicate output X and Y
+//            cropIntent.putExtra("outputX", 128);
+//            cropIntent.putExtra("outputY", 128);
+//            // retrieve data on return
+//            cropIntent.putExtra("return-data", true);
+//            // start the activity - we handle returning in onActivityResult
+//            startActivityForResult(cropIntent, PIC_CROP);
+//        }
+//        // respond to users whose devices do not support the crop action
+//        catch (ActivityNotFoundException anfe) {
+//            // display an error message
+//            String errorMessage = "Whoops - your device doesn't support the crop action!";
+//            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+//            toast.show();
+//        }
+//    }
 
     @Override
     protected void onStart() {

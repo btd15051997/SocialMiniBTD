@@ -34,7 +34,6 @@ public class NotificationsDialog extends DialogFragment implements INotification
     private Dialog dialog_notification;
     private RecyclerView recyc_notifications_dialog;
     private FirebaseAuth auth;
-    private TextView txt_not_available_notification;
 
     private ArrayList<ListNotification> arrayList;
     private NotificationAdapter notificationAdapter;
@@ -61,7 +60,6 @@ public class NotificationsDialog extends DialogFragment implements INotification
 
         recyc_notifications_dialog = dialog_notification.findViewById(R.id.recyc_notifications_dialog);
 
-        txt_not_available_notification = dialog_notification.findViewById(R.id.txt_not_available_notification);
 
         auth = FirebaseAuth.getInstance();
 
@@ -111,16 +109,6 @@ public class NotificationsDialog extends DialogFragment implements INotification
                         Controller.appLogDebug(Const.LOG_DAT, "onGetAllNotifications  :" + arrayList.toString());
 
                         recyc_notifications_dialog.setAdapter(notificationAdapter);
-
-                        if (!arrayList.isEmpty()){
-
-                            TranslateAnimation animate = new TranslateAnimation(0,100,0,0);
-                            animate.setDuration(500);
-                            animate.setFillAfter(true);
-                            txt_not_available_notification.startAnimation(animate);
-                            txt_not_available_notification.setVisibility(View.GONE);
-
-                        }
 
 
                     }

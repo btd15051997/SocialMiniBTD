@@ -19,10 +19,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class LoginPresenter implements ILoginPresenter {
@@ -65,40 +69,35 @@ public class LoginPresenter implements ILoginPresenter {
     private void LoginUserSocial(String email, String pass, final FirebaseAuth mAuth) {
 
         mAuth.signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener(mLoginActivity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
+                .addOnCompleteListener(mLoginActivity, task -> {
 
-                            FirebaseUser user = mAuth.getCurrentUser();
+                    if (task.isSuccessful()) {
 
-                            Controller.appLogDebug(Const.LOG_DAT, "loginUserWithEmail:success  " + user.getEmail());
+                        FirebaseUser user = mAuth.getCurrentUser();
 
-                            iLoginActivityView.onLoginIntentHome();
+                        Controller.appLogDebug(Const.LOG_DAT, "loginUserWithEmail:success  " + user.getEmail());
 
-                            Controller.showLongToast(user.getEmail().toString(), mLoginActivity);
+                        iLoginActivityView.onLoginIntentHome();
 
-                            Controller.removeProgressDialog();
+                        Controller.showLongToast(user.getEmail().toString(), mLoginActivity);
 
-                        } else {
+                        Controller.removeProgressDialog();
 
-                            // If sign in fails, display a message to the user.
-                            Controller.removeProgressDialog();
+                    } else {
 
-                            Controller.appLogDebug(Const.LOG_DAT, "loginUserWithEmail:false  " + task.getException().toString());
+                        // If sign in fails, display a message to the user.
+                        Controller.removeProgressDialog();
 
-                        }
+                        Controller.appLogDebug(Const.LOG_DAT, "loginUserWithEmail:false  " + task.getException().toString());
 
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-                Controller.appLogDebug(Const.LOG_DAT, "loginUserWithEmail:false  " + e.toString());
+                }).addOnFailureListener(e -> {
 
-                Controller.showLongToast(e.getMessage().toString(), mLoginActivity);
+            Controller.appLogDebug(Const.LOG_DAT, "loginUserWithEmail:false  " + e.toString());
 
-            }
+            Controller.showLongToast(e.getMessage().toString(), mLoginActivity);
+
         });
 
     }
@@ -111,39 +110,33 @@ public class LoginPresenter implements ILoginPresenter {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
 
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(mLoginActivity, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                .addOnCompleteListener(mLoginActivity, task -> {
 
-                        if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 
-                            // Sign in success, update UI with the signed-in user's information
+                        // Sign in success, update UI with the signed-in user's information
 
-                            FirebaseUser user = mAuth.getCurrentUser();
+                        FirebaseUser user = mAuth.getCurrentUser();
 
-                            Controller.appLogDebug(Const.LOG_DAT + "  ", "signInWithCredential:success" + user.getDisplayName() + " : " + user.getEmail());
+                        Controller.appLogDebug(Const.LOG_DAT + "  ", "signInWithCredential:success" + user.getDisplayName() + " : " + user.getEmail());
 
-                            Controller.showLongToast(user.getEmail().toString(), mLoginActivity);
+                        Controller.showLongToast(user.getEmail().toString(), mLoginActivity);
 
-                            onPutAuthToRealTimeDatabase(user);
+                        onPutAuthToRealTimeDatabase(user);
 
-                            mLoginActivity.onLoginIntentHome();
+                        mLoginActivity.onLoginIntentHome();
 
-                        } else {
+                    } else {
 
-                            // If sign in fails, display a message to the user.
-                            Controller.appLogDebug(Const.LOG_DAT, "signInWithCredential:failure  " + task.toString());
-                        }
-
+                        // If sign in fails, display a message to the user.
+                        Controller.appLogDebug(Const.LOG_DAT, "signInWithCredential:failure  " + task.toString());
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-                Controller.appLogDebug(Const.LOG_DAT, "signInWithCredential:failure  " + e.toString());
-                Controller.showLongToast(e.toString(), mLoginActivity);
+                }).addOnFailureListener(e -> {
 
-            }
+            Controller.appLogDebug(Const.LOG_DAT, "signInWithCredential:failure  " + e.toString());
+            Controller.showLongToast(e.toString(), mLoginActivity);
+
         });
 
     }
@@ -177,7 +170,46 @@ public class LoginPresenter implements ILoginPresenter {
         //put data within database
         reference.child(user_uid).setValue(hashMap);
 
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+
+                    onAddNodeFollow(user);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         Controller.appLogDebug(Const.LOG_DAT, "PutAuthToRealTimeDatabase  " + hashMap.toString());
+
+    }
+
+    private void onAddNodeFollow(FirebaseUser user) {
+
+        Log.d(Const.LOG_DAT, "Check_follow_Vao day 1");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("fUid", user.getUid());
+        map.put("fCountFl", "0");
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User");
+        databaseReference
+
+                .child(user.getUid())
+                .child("Follow")
+                .setValue(map)
+                .addOnSuccessListener(aVoid ->
+                        Log.d(Const.LOG_DAT, "Check_follow_Vao day 2"))
+                .addOnFailureListener(e ->
+                        Log.d(Const.LOG_DAT, "Check_follow_Vao day " + e.getMessage()));
 
     }
 

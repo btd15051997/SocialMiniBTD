@@ -70,6 +70,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,7 +88,7 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
     private ImageView img_background_profile;
     private ImageView img_profile_sortmenu;
     private CircularImageView img_avatar_profile;
-    private TextView txt_name_profile, txt_email_profile, txt_phone_profile,txt_follow_by;
+    private TextView txt_name_profile, txt_email_profile, txt_phone_profile, txt_follow_by;
     private EditText edt_search_listpost_profile;
     private CardView cardview_addpost_profile;
 
@@ -387,24 +388,24 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
                 .child(mAuth.getUid())
                 .child("Follow")
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                int countfCountFl = Integer.parseInt(""+ dataSnapshot.child("fCountFl").getValue());
+                        int countfCountFl = Integer.parseInt("" + dataSnapshot.child("fCountFl").getValue());
 
-                txt_follow_by.setText("Followed by "+countfCountFl);
+                        txt_follow_by.setText("Followed by " + countfCountFl);
 
-                Controller.appLogDebug(Const.LOG_DAT,"CountFollow  :"+countfCountFl);
+                        Controller.appLogDebug(Const.LOG_DAT, "CountFollow  :" + countfCountFl);
 
-            }
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                Controller.appLogDebug(Const.LOG_DAT,databaseError.getMessage());
+                        Controller.appLogDebug(Const.LOG_DAT, databaseError.getMessage());
 
-            }
-        });
+                    }
+                });
 
     }
 
@@ -1076,6 +1077,27 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
+        // Crop image
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+            if (resultCode == RESULT_OK) {
+
+                Uri uri_crop = result.getUri();
+
+                // upload image to server
+                onUploadConverPhotoProfile(uri_crop);
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
+                Exception error = result.getError();
+
+                Toast.makeText(mDashboardActivity, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
         if (resultCode == RESULT_OK) {
 
             if (requestCode == IMAGE_PICK_GALLERY_REQUEST_CODE) {
@@ -1084,7 +1106,13 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                 Controller.appLogDebug("PICK_IMAGE", image_uri.toString());
 
-                onUploadConverPhotoProfile(image_uri);
+                if (image_uri != null) {
+
+                    CropImage.activity(image_uri)
+                            .start(mDashboardActivity, this);
+
+                }
+
 
             }
 
@@ -1092,7 +1120,12 @@ public class ProfileFragment extends Fragment implements IProfileFragmentView, V
 
                 Controller.appLogDebug("PICK_IMAGE", image_uri.toString());
 
-                onUploadConverPhotoProfile(image_uri);
+                if (image_uri != null) {
+
+                    CropImage.activity(image_uri)
+                            .start(mDashboardActivity, this);
+
+                }
 
             }
 

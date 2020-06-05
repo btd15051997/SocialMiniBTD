@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="Name"
-                android:textColor="@color/black"
+                android:textColor="@color/color_new"
                 android:textSize="@dimen/_11ssp" />
 
             <TextView
@@ -53,7 +53,7 @@
                 android:layout_gravity="end"
                 android:singleLine="true"
                 android:text="Date"
-                android:textColor="@color/black"
+                android:textColor="@color/black_two"
                 android:textSize="@dimen/_10ssp" />
 
 

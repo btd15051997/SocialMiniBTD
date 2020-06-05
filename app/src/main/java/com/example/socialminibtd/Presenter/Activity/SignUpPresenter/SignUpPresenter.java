@@ -144,10 +144,8 @@ public class SignUpPresenter implements ISignUpPresenter {
 
         Log.d(Const.LOG_DAT, "Check_follow_Vao day 1");
 
-        String timeStamp = String.valueOf(System.currentTimeMillis());
 
         Map<String, Object> map = new HashMap<>();
-        map.put("fId", timeStamp);
         map.put("fUid", user.getUid());
         map.put("fCountFl", "0");
 
