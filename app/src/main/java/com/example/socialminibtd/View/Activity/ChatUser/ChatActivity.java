@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -47,6 +48,7 @@ import com.example.socialminibtd.Notifications.Retrofit.Client;
 import com.example.socialminibtd.R;
 import com.example.socialminibtd.Utils.Const;
 import com.example.socialminibtd.Utils.Controller;
+import com.example.socialminibtd.View.Activity.Login.LoginActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -74,16 +76,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity implements IChatActivityView, View.OnClickListener {
 
     private static final int REQUEST_CALL = 1;
+    private static final int REQUESTCODE_VOICE = 20;
     private ImageView img_send_text_chat, img_attachfile_chat;
     private CircularImageView img_user_chatting;
     private EditText edt_enter_text_chat;
     private RecyclerView recyc_content_chat;
-    private TextView txt_name_chatting, txt_status_chatting, txt_call_phone;
+    private TextView txt_name_chatting, txt_status_chatting, txt_call_phone, txt_voice_chat;
     private FirebaseAuth mAuth;
     private FirebaseUser mFirebaseUser;
     private FirebaseDatabase database;
@@ -148,6 +152,27 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
     }
 
+    private void onVoiceSearch() {
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hi Speak Something");
+
+        try {
+
+            startActivityForResult(intent, REQUESTCODE_VOICE);
+
+        } catch (ActivityNotFoundException e) {
+
+            Toast.makeText(this, "" + e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+
     @Override
     public void onClick(View v) {
 
@@ -156,6 +181,13 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
             case R.id.txt_call_phone:
 
                 onMakeCallPhone();
+
+                break;
+
+
+            case R.id.txt_voice_chat:
+
+                onVoiceSearch();
 
                 break;
 
@@ -216,6 +248,7 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         txt_status_chatting = findViewById(R.id.txt_status_chatting);
         img_attachfile_chat = findViewById(R.id.img_attachfile_chat);
         txt_call_phone = findViewById(R.id.txt_call_phone);
+        txt_voice_chat = findViewById(R.id.txt_voice_chat);
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
@@ -226,11 +259,21 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
         img_send_text_chat.setOnClickListener(this);
         img_attachfile_chat.setOnClickListener(this);
         txt_call_phone.setOnClickListener(this);
+        txt_voice_chat.setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mAuth.getCurrentUser();
-        myUid = mFirebaseUser.getUid();
 
+        if (mAuth.getCurrentUser() == null){
+
+            startActivity(new Intent(ChatActivity.this, LoginActivity.class));
+            finish();
+
+        }else {
+
+            mFirebaseUser = mAuth.getCurrentUser();
+            myUid = mFirebaseUser.getUid();
+
+        }
 
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("User");
@@ -660,42 +703,39 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
 
         builder.setTitle("Pick Image From");
 
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setItems(options, (dialog, which) -> {
 
-                switch (which) {
+            switch (which) {
 
-                    case 0:
+                case 0:
 
-                        if (!checkCameraPermission()) {
+                    if (!checkCameraPermission()) {
 
-                            requestCameraPermission();
+                        requestCameraPermission();
 
-                        } else {
+                    } else {
 
-                            pickImageFromCamera();
+                        pickImageFromCamera();
 
-                        }
+                    }
 
-                        break;
-                    case 1:
+                    break;
+                case 1:
 
-                        if (!checkStoragePermission()) {
+                    if (!checkStoragePermission()) {
 
-                            requestStoragePermission();
+                        requestStoragePermission();
 
-                        } else {
+                    } else {
 
-                            pickImageFromGallery();
+                        pickImageFromGallery();
 
-                        }
+                    }
 
-                        break;
-
-                }
+                    break;
 
             }
+
         });
 
         builder.create().show();
@@ -864,7 +904,18 @@ public class ChatActivity extends AppCompatActivity implements IChatActivityView
             }
         }
 
+
         if (resultCode == RESULT_OK) {
+
+
+            if (requestCode == REQUESTCODE_VOICE) {
+
+                ArrayList<String> stringArrayList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
+                Log.d("Voice_search", stringArrayList.size() + "  ");
+
+                edt_enter_text_chat.setText(stringArrayList.get(0));
+            }
 
             if (requestCode == IMAGE_PICK_GALLERY_REQUEST_CODE) {
 

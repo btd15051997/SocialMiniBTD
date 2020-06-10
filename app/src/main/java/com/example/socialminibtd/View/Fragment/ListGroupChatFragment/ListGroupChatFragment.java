@@ -24,6 +24,7 @@ import com.example.socialminibtd.Utils.Controller;
 import com.example.socialminibtd.View.Activity.Dashbroad.DashboardActivity;
 import com.example.socialminibtd.View.Dialog.GroupChatsDialog.GroupChatsDialog;
 import com.example.socialminibtd.View.Dialog.GroupCreate.GroupCreateDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,7 +60,7 @@ public class ListGroupChatFragment extends Fragment implements IListChatGroupVie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view =  inflater.inflate(R.layout.fragment_list_group_chat, container, false);
+        view = inflater.inflate(R.layout.fragment_list_group_chat, container, false);
 
         onMappingViewGroupChats();
 
@@ -74,17 +75,19 @@ public class ListGroupChatFragment extends Fragment implements IListChatGroupVie
         recyc_list_group = view.findViewById(R.id.recyc_list_group);
         show_not_join_any_groups = view.findViewById(R.id.show_not_join_any_groups);
 
-        show_not_join_any_groups.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        show_not_join_any_groups.setOnClickListener(v -> {
 
-                GroupCreateDialog dialog_group = new GroupCreateDialog();
-                dialog_group.setCancelable(true);
-                dialog_group.show(getFragmentManager(), "GroupCreateDialog");
+            onIntentCreateGroup();
 
-            }
         });
 
+    }
+
+    private void onIntentCreateGroup() {
+
+        GroupCreateDialog dialog_group = new GroupCreateDialog();
+        dialog_group.setCancelable(true);
+        dialog_group.show(getFragmentManager(), "GroupCreateDialog");
     }
 
     @Override
@@ -117,9 +120,9 @@ public class ListGroupChatFragment extends Fragment implements IListChatGroupVie
 
                 }
 
-                if (!arrayList.isEmpty()){
+                if (!arrayList.isEmpty()) {
 
-                    TranslateAnimation animate = new TranslateAnimation(0,show_not_join_any_groups.getWidth(),0,0);
+                    TranslateAnimation animate = new TranslateAnimation(0, show_not_join_any_groups.getWidth(), 0, 0);
                     animate.setDuration(500);
                     animate.setFillAfter(true);
                     show_not_join_any_groups.startAnimation(animate);

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -94,6 +95,16 @@ public class ListsUserHorizotalAdapter extends RecyclerView.Adapter<ListsUserHor
 
         }
 
+
+        if (horizotalArrayList.get(position).getOnlineStatus().equals("Online")) {
+
+            holder.img_onlinestatus_listchat.setImageResource(R.drawable.circle_online);
+
+        } else {
+
+            holder.img_onlinestatus_listchat.setImageResource(R.drawable.circle_offline);
+        }
+
     }
 
     private void imBlockORNot(final String hisUID) {
@@ -141,12 +152,14 @@ public class ListsUserHorizotalAdapter extends RecyclerView.Adapter<ListsUserHor
 
         private CircularImageView img_user_horizontal;
         private TextView txt_user_name_horizontal;
+        private ImageView img_onlinestatus_listchat;
 
         public ViewHodel(@NonNull View itemView) {
             super(itemView);
 
             img_user_horizontal = itemView.findViewById(R.id.img_user_horizontal);
             txt_user_name_horizontal = itemView.findViewById(R.id.txt_user_name_horizontal);
+            img_onlinestatus_listchat = itemView.findViewById(R.id.img_onlinestatus_listchat);
         }
     }
 

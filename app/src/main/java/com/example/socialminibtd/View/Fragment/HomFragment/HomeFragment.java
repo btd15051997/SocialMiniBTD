@@ -352,14 +352,11 @@ public class HomeFragment extends Fragment implements IHomeFragmentView, View.On
 
         dialog.show();
 
-        btn_logout_yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btn_logout_yes.setOnClickListener(view -> {
 
-                firebaseAuth.signOut();
-                mDashboardActivity.onCheckUserCurrent();
+            firebaseAuth.signOut();
+            mDashboardActivity.onCheckUserCurrent();
 
-            }
         });
 
         TextView btn_logout_no = (TextView) dialog.findViewById(R.id.btn_logout_no);

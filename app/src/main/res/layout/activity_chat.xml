@@ -93,6 +93,11 @@
                 android:layout_height="@dimen/_30sdp"
                 android:layout_weight="0.1"
                 android:src="@drawable/ic_attach" />
+            <TextView
+                android:id="@+id/txt_voice_chat"
+                android:background="@drawable/ic_keyboard_voice"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"/>
 
             <EditText
                 android:id="@+id/edt_enter_text_chat"

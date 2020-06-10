@@ -108,11 +108,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyHolder> {
 
         try {
 
-            Picasso.get().load(imageUrl).into(holder.img_row_left);
+            Picasso.get().load(imageUrl).placeholder(R.drawable.ic_account).into(holder.img_row_left);
 
         } catch (Exception e) {
 
-            Picasso.get().load(R.drawable.ic_account).into(holder.img_row_left);
+            holder.img_row_left.setBackgroundResource(R.drawable.ic_account);
 
         }
 
