@@ -149,7 +149,6 @@ public class UserFragment extends Fragment implements IUserFragmentView, View.On
 
                 }
 
-
                 mListUserAdapter = new ListUserAdapter(mUserArrayList, mDashboardActivity);
 
                 mListUserAdapter.notifyDataSetChanged();

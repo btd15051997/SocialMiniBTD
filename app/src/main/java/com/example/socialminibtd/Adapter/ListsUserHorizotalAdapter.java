@@ -111,7 +111,7 @@ public class ListsUserHorizotalAdapter extends RecyclerView.Adapter<ListsUserHor
 
         //if other blocked you, you can't send message to that user
         DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("User");
-        Ref.child(hisUID).child("BlockedUSers").orderByChild("uid").equalTo(firebaseAuth.getUid())
+        Ref.child(hisUID).child("BlockedUSers").orderByChild("uid").equalTo(firebaseAuth.getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -141,6 +141,7 @@ public class ListsUserHorizotalAdapter extends RecyclerView.Adapter<ListsUserHor
                     }
                 });
 
+
     }
 
     @Override
@@ -160,6 +161,8 @@ public class ListsUserHorizotalAdapter extends RecyclerView.Adapter<ListsUserHor
             img_user_horizontal = itemView.findViewById(R.id.img_user_horizontal);
             txt_user_name_horizontal = itemView.findViewById(R.id.txt_user_name_horizontal);
             img_onlinestatus_listchat = itemView.findViewById(R.id.img_onlinestatus_listchat);
+
+
         }
     }
 
